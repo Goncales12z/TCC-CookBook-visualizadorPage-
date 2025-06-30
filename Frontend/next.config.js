@@ -1,13 +1,9 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-    ],
-  },
-};
+const withImages = require('next-images')
+const withNextCircularDeps = require('next-circular-dependency')
+module.exports = withImages({
+    // webpack: (config, { isServer }) => {
+    //     config.externals = ["webpack", "readable-stream", "d3-interpolate", "next"]
+    //     return config
+    // }
+})
 
-module.exports = nextConfig;

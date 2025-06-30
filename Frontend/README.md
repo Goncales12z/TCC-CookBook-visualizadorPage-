@@ -1,94 +1,114 @@
-# [NextJS Tailwind Blog Posts Page](http://demos.creative-tim.com/nextjs-tailwind-blog-posts-page?ref=readme-ntbpp) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?url=https://www.creative-tim.com/product/nextjs-tailwind-blog-posts-page&text=Check%20Material%20Tailwind%202%20Template%20made%20by%20@CreativeTim%20#webdesign%20#template%20#materialdesign%20#react%20https://www.creative-tim.com/product/nextjs-tailwind-blog-posts-page)
+# 🚀 Flatlogic Ecommerce React - A Free E-commerce Template!
 
-![version](https://img.shields.io/badge/version-1.0.0-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/nextjs-tailwind-blog-posts-page.svg)](https://github.com/creativetimofficial/nextjs-tailwind-blog-posts-page/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/nextjs-tailwind-blog-posts-page.svg)](https://github.com/creativetimofficial/nextjs-tailwind-blog-posts-page/issues?q=is%3Aissue+is%3Aclosed)
+[View Demo](https://flatlogic.com/templates/ecommerce-react-template/demo) | [Download](https://github.com/flatlogic/ecommerce-frontend/archive/refs/heads/master.zip) | [More Templates](https://flatlogic.com/templates) | [Discord Community](https://discord.gg/flatlogic-community) | [Support Forum](https://flatlogic.com/forum)
 
-![Image](https://s3.amazonaws.com/creativetim_bucket/products/746/original/material-tailwind-react-blog-post-template-thumbnail.jpg)
+**Originally a premium product priced at $119+, made available for free in January 2025!** 🎉
 
-Introducing Tailwind Blog Post Page, a sleek and user-friendly blog post template built on the foundation of Tailwind CSS and Material Tailwind.
+Looking for a perfect codebase generator for your Startup? Try [Flatlogic AI Web App Generator](https://flatlogic.com/generator) - our new tool, sort of a template++.
 
-Are you in need of a professionally designed and highly customizable blog post page template tailored for bloggers, writers, and content creators to present their articles in an engaging and attractive manner? You are in the right place! We are excited to introduce our Free Blog Post Page Template, carefully crafted to cater to the needs of blog developers like you.
+---
 
-This template, designed with Tailwind CSS and Material Tailwind, offers effortless customization to align perfectly with your blog's unique branding. The free blog post template comes packed with essential features such as hero image, content section, social media buttons, and comments section.
+## 🎯 Why Flatlogic Ecommerce React?
+- **Ex-Premium**: This template was previously paid. Enjoy it for free now. 😉
+- **Fully Functional Store**: Includes product pages, categories, and user authentication.
+- **Join the Community**: [Flatlogic Discord](https://discord.gg/flatlogic-community) is where the action happens.
+- **Free Node.js Backend**: Pair it up with [ecommerce react backend](https://github.com/flatlogic/ecommerce-backend) to go full-stack.
 
-**Documentation built by Developers**
+---
 
-Each element is well presented in very complex documentation.
+## 🚀 Quick Start
 
-You can read more about the [documentation here](https://www.material-tailwind.com/docs/react/installation).
+1. **Clone the repo**  
+   ```bash
+   git clone https://github.com/flatlogic/ecommerce-frontend.git
+   cd ecommerce-frontend
+   ```
+2. **Install dependencies**  
+   ```bash
+   yarn install  # Or npm install
+   ```
+3. **Run the app**  
+   ```bash
+   yarn start
+   ```
+   Navigate to http://localhost:3000/.
 
-**HELPFUL LINKS**
+4. **Build for production**  
+   ```bash
+   yarn build
+   ```
 
-- View [Github Repository](https://github.com/creativetimofficial/nextjs-tailwind-blog-posts-page)
-- Check [FAQ Page](https://www.creative-tim.com/faq)
+---
 
-## [Demo](https://creative-tim.com/product/nextjs-tailwind-blog-posts-page)
+## 🧩 Features
 
-## Quick start
+- Product Listing & Filtering
+- Server-side Rendering (Next.js)
+- SEO Module
+- Blog & CMS Integration
+- User Authentication (email/password)
+- Stripe Integration
+- Responsive Layout
+- Checkout Page
 
-Quick start options:
+---
 
-- Download from [Creative Tim](https://www.creative-tim.com/product/nextjs-tailwind-blog-posts-page?ref=readme-ntbpp).
+## 🛠 Built With
+- React 16
+- Next.js
+- Bootstrap
+- Node.js
+- PostgreSQL
+- Sequelize ORM
 
-## Terminal Commands
+---
 
-1. Download and Install NodeJs LTS version from [NodeJs Official Page](https://nodejs.org/en/download/).
-2. Navigate to the root ./ directory of the product and run `npm install` to install our local dependencies.
+## 📦 Pages
+- Product Listings
+- Product Page
+- Categories
+- Dashboard
+- Blog (CMS)
+- Checkout
+- Login / Registration
+- Error Page
 
-## Documentation
+---
 
-The documentation for the Material Dashboard is hosted at our [website](https://www.material-tailwind.com/docs/react/installation?ref=readme-ntbpp).
+## 🌍 Available Variants
 
-## Browser Support
+|               | **Material**                                              | **Transparent**                                         | **Classic**                                          | **Sofia**                                          | **Flatlogic**                                      |
+|---------------|-----------------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------|-----------------------------------------------------|----------------------------------------------------|
+| **React**     | [React Material Admin](https://github.com/flatlogic/react-material-admin-full) | [Light Blue React](https://github.com/flatlogic/light-blue-react) | [Sing App React](https://github.com/flatlogic/sing-app-react) | [Sofia React](https://github.com/flatlogic/sofia-react) | [One React](https://github.com/flatlogic/one-react) |
+| **Angular**   | [Angular Material Admin](https://github.com/flatlogic/angular-material-admin-full) | [Light Blue Angular](https://github.com/flatlogic/light-blue-angular) | [Sing App Angular](https://github.com/flatlogic/sing-app-angular) | - | - |
+| **Vue**       | [Material Vue](https://github.com/flatlogic/material-vue-full) | [Light Blue Vue](https://github.com/flatlogic/light-blue-vue) | [Sing App Vue](https://github.com/flatlogic/sing-app-vue) | - | - |
+| **Bootstrap** | - | [Light Blue HTML5](https://github.com/flatlogic/light-blue-html5) | [Sing App HTML5](https://github.com/flatlogic/sing-app-html5) | - | [One Bootstrap](https://github.com/flatlogic/one-bootstrap-template-full) |
 
-At present, we officially aim to support the last two versions of the following browsers:
 
-<img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/chrome.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/firefox.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/edge.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/safari.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/opera.png" width="64" height="64">
+Additionally, these templates are tailored for specific business needs:
+- [E-Commerce Frontend (React)](https://github.com/flatlogic/ecommerce-frontend) - A complete e-commerce solution.
+- [Bookkeeper UI (React)](https://github.com/flatlogic/bookkeeper-ui) - Accounting dashboard for finance management.
+- [User Management Template (React)](https://github.com/flatlogic/user-management-template) - User authentication and management.
 
-## Resources
+---
 
-- [Live Preview](https://demos.creative-tim.com/nextjs-tailwind-blog-posts-page?ref=readme-ntbpp)
-- [Download Page](https://www.creative-tim.com/product/nextjs-tailwind-blog-posts-page?ref=readme-ntbpp)
-- Documentation is [here](https://www.material-tailwind.com/docs/react/installation?ref=readme-ntbpp)
-- [License Agreement](https://www.creative-tim.com/license?ref=readme-ntbpp)
-- [Support](https://www.creative-tim.com/contact-us?ref=readme-ntbpp)
-- Issues: [Github Issues Page](https://github.com/creativetimofficial/nextjs-tailwind-blog-posts-page/issues)
-- [Nepcha Analytics](https://nepcha.com?ref=readme) - Analytics tool for your website
+## 👨‍💻 How to Contribute
+- **Star this repo ⭐** - show some love.
+- **Report bugs** - but be nice.
+- **Join the [Discord](<insert-discord-invite-link>)** - meet fellow devs.
 
-## Reporting Issues
+---
 
-We use GitHub Issues as the official bug tracker for the Nextjs Tailwind Author Page. Here are some advices for our users that want to report an issue:
+## 🔥 About Flatlogic
+[Flatlogic AI Software Engineer](https://flatlogic.com/ai-software-development-agent) builds modern business software so you don't have to. Our AI Software Development Agent helps you generate, deploy, and maintain enterprise applications with minimal effort.
 
-1. Make sure that you are using the latest version of the Nextjs Tailwind Author Page. Check the CHANGELOG from your dashboard on our [website](https://www.creative-tim.com/product/nextjs-tailwind-blog-posts-page?ref=readme-ntbpp).
-2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
-3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
+---
 
-## Technical Support or Questions
+## 📜 License
+This template is free to use. Modify it, break it, make it your own. Just don’t try to sell it back to us. 😎
 
-If you have questions or need help integrating the product please [contact us](https://www.creative-tim.com/contact-us?ref=readme-ntbpp) instead of opening an issue.
+---
 
-## Licensing
+> **Questions or feedback?**  
+> Join our [Flatlogic Community Discord](https://discord.gg/flatlogic-community) or visit our [support forum](https://flatlogic.com/forum). We might even reply!
 
-- Copyright 2023 [Creative Tim](https://www.creative-tim.com?ref=readme-ntbpp)
-- Creative Tim [license](https://www.creative-tim.com/license?ref=readme-ntbpp)
-
-## Useful Links
-
-- [More products](https://www.creative-tim.com/templates?ref=readme-ntbpp) from Creative Tim
-
-- [Tutorials](https://www.youtube.com/channel/UCVyTG4sCw-rOvB9oHkzZD1w)
-
-- [Freebies](https://www.creative-tim.com/bootstrap-themes/free?ref=readme-ntbpp) from Creative Tim
-
-- [Affiliate Program](https://www.creative-tim.com/affiliates/new?ref=readme-ntbpp) (earn money)
-
-##### Social Media
-
-Twitter: <https://twitter.com/CreativeTim>
-
-Facebook: <https://www.facebook.com/CreativeTim>
-
-Dribbble: <https://dribbble.com/creativetim>
-
-Google+: <https://plus.google.com/+CreativetimPage>
-
-Instagram: <https://instagram.com/creativetimofficial>

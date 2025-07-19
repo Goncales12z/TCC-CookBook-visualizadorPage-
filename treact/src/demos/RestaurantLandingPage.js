@@ -24,7 +24,7 @@ export default () => {
 
   const imageCss = tw`rounded-4xl`;
   return (
-    <AnimationRevealPage>
+    <AnimationRevealPage disabled>
       <Hero
         heading={
           <>

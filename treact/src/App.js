@@ -92,7 +92,7 @@ import RestaurantLandingPage from "demos/RestaurantLandingPage.js";
 
 /* Inner Pages */
 import LoginPage from "pages/Login.js";
-import SignupPage from "pages/Signup.js";
+import RegisterPage from "pages/RegisterPage.js";
 import PricingPage from "pages/Pricing.js";
 import AboutUsPage from "pages/AboutUs.js";
 import ContactUsPage from "pages/ContactUs.js";
@@ -126,7 +126,7 @@ export default function App() {
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/" element={<RestaurantLandingPage />} />
           <Route path="src/pages/Login.js" element={<LoginPage />} />
-          <Route path="src/pages/Signup.js" element={<SignupPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="src/pages/Pricing.js" element={<PricingPage />} />
           <Route path="src/pages/AboutUs.js" element={<AboutUsPage />} />
           <Route path="src/pages/ContactUs.js" element={<ContactUsPage />} />

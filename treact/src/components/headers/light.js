@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import tw from "twin.macro";
 import styled from "styled-components";
@@ -76,15 +77,20 @@ export default ({
    * changing the defaultLinks variable below below.
    * If you manipulate links here, all the styling on the links is already done for you. If you pass links yourself though, you are responsible for styling the links or use the helper styled components that are defined here (NavLink)
    */
+
   const defaultLinks = [
     <NavLinks key={1}>
       <NavLink href="#depoimentos">Sobre Nós</NavLink>
       <NavLink href="/#">Blog</NavLink>
       <NavLink href="/#">Pricing</NavLink>
       <NavLink href="/#">Contact Us</NavLink>
-      <NavLink href="/#">Login</NavLink>
-      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/#">
-        Sign Up
+      <NavLink href="/#">Entrar</NavLink>
+      <PrimaryLink
+        as={Link}
+        to="/register"
+        className="ml-4 shadow-lg hover:scale-105 transition-transform duration-200"
+      >
+        Criar Conta
       </PrimaryLink>
     </NavLinks>,
   ];
@@ -96,7 +102,7 @@ export default ({
   const defaultLogoLink = (
     <LogoLink href="/">
       <img src={logo} alt="logo" />
-      Treact
+      CookBook
     </LogoLink>
   );
 

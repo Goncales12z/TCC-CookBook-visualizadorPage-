@@ -46,8 +46,9 @@ export default () => {
           alert(`Você pesquisou por: ${search}`);
           // Aqui você pode filtrar dados, chamar API, etc.
         }}
-        style={{ display: "flex", justifyContent: "center", margin: "2rem 0" }}
+        style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
       >
+      <div id="search-bar" style={{ display: "flex", paddingTop: "80px" }}>
         <input
           type="text"
           placeholder="Pesquise por pratos"
@@ -78,8 +79,9 @@ export default () => {
         >
           Buscar
         </button>
+        </div>
       </form>
-      <TabGrid heading={<>O que você quer fazer de {getPeriodo()}?</>} />
+      <TabGrid heading={<>O que você quer fazer de {getPeriodo()}</>} />
       <section
         id="sobre-nos"
         style={{ scrollMarginTop: "100px", padding: "60px 0" }}

@@ -99,6 +99,9 @@ import ContactUsPage from "pages/ContactUs.js";
 import BlogIndexPage from "pages/BlogIndex.js";
 import TermsOfServicePage from "pages/TermsOfService.js";
 import PrivacyPolicyPage from "pages/PrivacyPolicy.js";
+import Login from "./pages/Login"; // ajuste o caminho conforme necessário
+
+
 
 import ComponentRenderer from "ComponentRenderer.js";
 //import MainLandingPage from "../src/demos/RestaurantLandingPage.js";
@@ -125,7 +128,7 @@ export default function App() {
           />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/" element={<RestaurantLandingPage />} />
-          <Route path="src/pages/Login.js" element={<LoginPage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="src/pages/Pricing.js" element={<PricingPage />} />
           <Route path="src/pages/AboutUs.js" element={<AboutUsPage />} />

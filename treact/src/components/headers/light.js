@@ -81,10 +81,7 @@ export default ({
   const defaultLinks = [
     <NavLinks key={1}>
       <NavLink href="#depoimentos">Sobre Nós</NavLink>
-      <NavLink href="/#">Blog</NavLink>
-      <NavLink href="/#">Pricing</NavLink>
-      <NavLink href="/#">Contact Us</NavLink>
-      <NavLink href="/#">Entrar</NavLink>
+      <NavLink as={Link} to="/login">Entrar</NavLink>
       <PrimaryLink
         as={Link}
         to="/register"

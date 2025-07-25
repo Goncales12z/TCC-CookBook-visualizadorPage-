@@ -91,7 +91,7 @@ import RestaurantLandingPage from "demos/RestaurantLandingPage.js";
 // import HostingCloudLandingPage from "demos/HostingCloudLandingPage.js";
 
 /* Inner Pages */
-import LoginPage from "pages/Login.js";
+
 import RegisterPage from "pages/RegisterPage.js";
 import PricingPage from "pages/Pricing.js";
 import AboutUsPage from "pages/AboutUs.js";

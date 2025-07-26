@@ -4,23 +4,23 @@ import tw from "twin.macro";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 //import Hero from "components/hero/TwoColumnWithVideo.js";
 import Header from "components/headers/light.js"; // Adicione esta linha
-import Features from "components/features/ThreeColSimple.js";
+//import Features from "components/features/ThreeColSimple.js";
 //import MainFeature from "components/features/TwoColWithButton.js";
-import MainFeature2 from "components/features/TwoColSingleFeatureWithStats2.js";
+//wimport MainFeature2 from "components/features/TwoColSingleFeatureWithStats2.js";
 import TabGrid from "components/cards/TabCardGrid.js";
-import Testimonial from "components/testimonials/ThreeColumnWithProfileImage.js";
-import DownloadApp from "components/cta/DownloadApp.js";
-import Footer from "components/footers/FiveColumnWithInputForm.js";
+//import Testimonial from "components/testimonials/ThreeColumnWithProfileImage.js";
+//import DownloadApp from "components/cta/DownloadApp.js";
+//import Footer from "components/footers/FiveColumnWithInputForm.js";
 
-import chefIconImageSrc from "images/chef-icon.svg";
-import celebrationIconImageSrc from "images/celebration-icon.svg";
-import shopIconImageSrc from "images/shop-icon.svg";
+//import chefIconImageSrc from "images/chef-icon.svg";
+//import celebrationIconImageSrc from "images/celebration-icon.svg";
+//import shopIconImageSrc from "images/shop-icon.svg";
 
 export default () => {
   const [search, setSearch] = useState("");
-  const Subheading = tw.span`tracking-wider text-sm font-medium`;
-  const HighlightedText = tw.span`bg-primary-500 text-gray-100 px-4 transform -skew-x-12 inline-block`;
-  const HighlightedTextInverse = tw.span`bg-gray-100 text-primary-500 px-4 transform -skew-x-12 inline-block`;
+  //const Subheading = tw.span`tracking-wider text-sm font-medium`;
+  //const HighlightedText = tw.span`bg-primary-500 text-gray-100 px-4 transform -skew-x-12 inline-block`;
+  //const HighlightedTextInverse = tw.span`bg-gray-100 text-primary-500 px-4 transform -skew-x-12 inline-block`;
   //const Description = tw.span`inline-block mt-8`;
   const CafeText = tw.span`bg-yellow-300 text-yellow-900 px-4 rounded-lg font-bold`;
   const AlmocoText = tw.span`bg-green-300 text-green-900 px-4 rounded-lg font-bold`;
@@ -36,7 +36,7 @@ export default () => {
     return <JantarText>jantar?</JantarText>;
   }
 
-  const imageCss = tw`rounded-4xl`;
+  //const imageCss = tw`rounded-4xl`;
   return (
     <AnimationRevealPage disabled>
       <Header /> {/* Adiciona o menu com os botões de navegação */}
@@ -82,7 +82,7 @@ export default () => {
         </div>
       </form>
       <TabGrid heading={<>O que você quer fazer de {getPeriodo()}</>} />
-      <section
+      {/*<section
         id="sobre-nos"
         style={{ scrollMarginTop: "100px", padding: "60px 0" }}
       >
@@ -92,13 +92,15 @@ export default () => {
           Sobre Nós
         </h2>
         <p>
-          Somos um restaurante dedicado a oferecer refeições deliciosas e
-          acessíveis, com uma equipe apaixonada e mais de 230 locais atendidos.
-          Nossa missão é proporcionar a melhor experiência gastronômica para
-          nossos clientes.
+          Somos um grupo de estudandes apaixonados por tecnologia e culinária,
+          dedicados a criar uma plataforma que conecta pessoas a experiências
+          gastronômicas únicas. Nossa missão é facilitar o acesso a pratos
+          deliciosos e promover a facilidade na decisão da sua refeição. Acreditamos que a
+          comida é uma forma de arte e queremos compartilhar essa paixão com o
+          mundo.
         </p>
-      </section>
-      <Features
+      </section>*/}
+      {/*<Features
         heading={
           <>
             Amazing <HighlightedText>Services.</HighlightedText>
@@ -176,7 +178,7 @@ export default () => {
           </>
         }
       />
-      <Footer />
+      <Footer />*/}
     </AnimationRevealPage>
   );
 };

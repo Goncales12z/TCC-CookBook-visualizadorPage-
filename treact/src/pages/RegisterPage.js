@@ -2,7 +2,7 @@ import React from "react";
 import tw from "twin.macro";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import Header from "components/headers/light.js";
-import Footer from "components/footers/FiveColumnWithInputForm.js";
+//import Footer from "components/footers/FiveColumnWithInputForm.js";
 import { Mail, User, Lock } from "react-feather"; // Instale react-feather se não tiver
 
 const Container = tw.div`min-h-screen bg-gray-100 flex flex-col`;
@@ -94,7 +94,6 @@ export default function RegisterPage() {
             <LinkText href="/login">Já tem uma conta? Entrar</LinkText>
           </FormContainer>
         </Content>
-        <Footer />
       </Container>
     </AnimationRevealPage>
   );

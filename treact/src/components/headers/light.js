@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import tw from "twin.macro";
 import styled from "styled-components";
@@ -10,6 +10,7 @@ import useAnimatedNavToggler from "../../helpers/useAnimatedNavToggler.js";
 import logo from "../../images/logo.svg";
 import { ReactComponent as MenuIcon } from "feather-icons/dist/icons/menu.svg";
 import { ReactComponent as CloseIcon } from "feather-icons/dist/icons/x.svg";
+
 
 const Header = tw.header`
   flex justify-between items-center
@@ -80,17 +81,12 @@ export default ({
 
   const defaultLinks = [
     <NavLinks key={1}>
-      <NavLink href="#depoimentos">Sobre Nós</NavLink>
-      <NavLink as={Link} to="/login">Entrar</NavLink>
-      <PrimaryLink
-        as={Link}
-        to="/register"
-        className="ml-4 shadow-lg hover:scale-105 transition-transform duration-200"
-      >
-        Criar Conta
-      </PrimaryLink>
+      <NavLink href="/#">Home</NavLink>
+      <NavLink href="/aboutus">Sobre Nós</NavLink>
+      <NavLink href="/perfil">Perfil</NavLink>
     </NavLinks>,
   ];
+
 
   const { showNavLinks, animation, toggleNavbar } = useAnimatedNavToggler();
   const collapseBreakpointCss =

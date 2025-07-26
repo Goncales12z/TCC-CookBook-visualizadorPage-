@@ -93,13 +93,11 @@ import RestaurantLandingPage from "demos/RestaurantLandingPage.js";
 /* Inner Pages */
 
 import RegisterPage from "pages/RegisterPage.js";
-import PricingPage from "pages/Pricing.js";
 import AboutUsPage from "pages/AboutUs.js";
-import ContactUsPage from "pages/ContactUs.js";
-import BlogIndexPage from "pages/BlogIndex.js";
 import TermsOfServicePage from "pages/TermsOfService.js";
 import PrivacyPolicyPage from "pages/PrivacyPolicy.js";
-import Login from "./pages/Login"; // ajuste o caminho conforme necessário
+import Login from "./pages/Login"; 
+import Perfil from "./pages/Perfil"; 
 
 
 
@@ -128,14 +126,12 @@ export default function App() {
           />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/" element={<RestaurantLandingPage />} />
+          <Route path="/perfil" element={<Perfil />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="src/pages/Pricing.js" element={<PricingPage />} />
-          <Route path="src/pages/AboutUs.js" element={<AboutUsPage />} />
-          <Route path="src/pages/ContactUs.js" element={<ContactUsPage />} />
-          <Route path="src/pages/BlogIndex.js" element={<BlogIndexPage />} />
+          <Route path="/aboutus" element={<AboutUsPage />} />
           <Route
-            path="src/pages/TermsOfService.js"
+            path="/terms-of-service"
             element={<TermsOfServicePage />}
           />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />

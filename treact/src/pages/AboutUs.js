@@ -1,68 +1,55 @@
 import React from "react";
-import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import tw from "twin.macro";
-import styled from "styled-components"; //eslint-disable-line
-import { css } from "styled-components/macro"; //eslint-disable-line
+import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import Header from "components/headers/light.js";
-import Footer from "components/footers/FiveColumnWithInputForm.js";
-import MainFeature1 from "components/features/TwoColWithButton.js";
-// import MainFeature2 from "components/features/TwoColSingleFeatureWithStats.js";
-// import MainFeature3 from "components/features/TwoColSingleFeatureWithStats2.js";
-import Features from "components/features/ThreeColSimple.js";
-// import Features from "components/features/ThreeColWithSideImage.js";
-import TeamCardGrid from "components/cards/ProfileThreeColGrid.js";
+//import Footer from "components/footers/FiveColumnWithInputForm.js";
+//import { Mail, User, Lock } from "react-feather"; // Instale react-feather se não tiver
 
-import SupportIconImage from "images/support-icon.svg";
-import ShieldIconImage from "images/shield-icon.svg";
-import CustomerLoveIconImage from "images/simple-icon.svg";
+const Container = tw.div`min-h-screen bg-gray-100 flex flex-col items-center pt-32`;
+const Content = tw.div`flex-1 flex flex-col items-center justify-start px-4`;
+const FormContainer = tw.div`bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md`;
+const Title = tw.h2`text-3xl font-bold text-center text-primary-700 mb-10`;
+//const Subtitle = tw.p`text-center text-gray-500 mb-6`;
+const Field = tw.div`mb-4`;
+//const Label = tw.label`block mb-1 font-semibold text-gray-700`;
+const InputWrapper = tw.div`relative`;
+//const Icon = tw.span`absolute left-0 top-1/2 transform -translate-y-1/2 text-primary-500`;
+//const Input = tw.input`
+//  w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg
+//  focus:outline-none focus:border-primary-500 transition
+//  bg-white text-gray-800 placeholder-gray-400
+//  shadow-sm
+//`;
+//const Button = tw.button`w-full bg-primary-500 text-white font-bold py-3 rounded-lg hover:bg-primary-700 transition mb-2 mt-2`;
+//const LinkText = tw.a`block text-center text-primary-500 hover:underline mt-2`;
+//const Link = tw.a`block text-center text-blue-500 hover:underline`;
 
-const Subheading = tw.span`uppercase tracking-wider text-sm`;
-export default () => {
+export default function RegisterPage() {
   return (
     <AnimationRevealPage>
       <Header />
-      <MainFeature1
-        subheading={<Subheading>About Treact</Subheading>}
-        heading="We are a modern design agency."
-        buttonRounded={false}
-        primaryButtonText="See Portfolio"
-        imageSrc="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=768&q=80"
-      />
-      <MainFeature1
-        subheading={<Subheading>Our Vision</Subheading>}
-        heading="We aim to disrupt the design space."
-        buttonRounded={false}
-        primaryButtonText="Contact Us"
-        imageSrc="https://images.unsplash.com/3/doctype-hi-res.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=768&q=80"
-        textOnLeft={false}
-      />
-      <Features
-        subheading={<Subheading>Our Values</Subheading>}
-        heading="We follow these."
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        cards={[
-          {
-            imageSrc: SupportIconImage,
-            title: "24/7 Support",
-            description: "Lorem ipsum donor amet siti ceali placeholder text alipiscing elit sed do eiusmod temport"
-          },
-          {
-            imageSrc: ShieldIconImage,
-            title: "Strong Teams",
-            description: "Lorem ipsum donor amet siti ceali placeholder text alipiscing elit sed do eiusmod temport"
-          },
-          {
-            imageSrc: CustomerLoveIconImage,
-            title: "Customer Satisfaction",
-            description: "Lorem ipsum donor amet siti ceali placeholder text alipiscing elit sed do eiusmod temport"
-          },
-        ]}
-        linkText=""
-      />
-      <TeamCardGrid 
-        subheading={<Subheading>Our Team</Subheading>}
-      />
-      <Footer />
+      <Container>
+        <Content>
+          <FormContainer>
+            <Title>Um pouco sobre quem nós somos.</Title>
+            <form>
+              <Field>
+                <InputWrapper>
+                  <p>
+                    Somos um grupo de estudandes apaixonados por tecnologia e culinária,
+                    dedicados a criar uma plataforma que conecta pessoas a experiências
+                    gastronômicas únicas. Nossa missão é facilitar o acesso a pratos
+                    deliciosos e promover a facilidade na decisão da sua refeição. Acreditamos que a
+                    comida é uma forma de arte e queremos compartilhar essa paixão com o
+                    mundo.
+                  </p>
+                </InputWrapper>
+              </Field>
+            </form>
+          </FormContainer>
+        </Content>
+      </Container>
     </AnimationRevealPage>
   );
-};
+}
+

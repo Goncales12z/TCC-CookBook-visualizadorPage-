@@ -9,6 +9,7 @@ import logo from "images/logo.svg";
 import googleIconImageSrc from "images/google-icon.png";
 import twitterIconImageSrc from "images/twitter-icon.png";
 import { ReactComponent as LoginIcon } from "feather-icons/dist/icons/log-in.svg";
+import { auth, provider, signInWithPopup } from "../firebase.js";
 
 const Container = tw(ContainerBase)`min-h-screen bg-primary-900 text-white font-medium flex justify-center -m-8`;
 const Content = tw.div`max-w-screen-xl m-0 sm:mx-20 sm:my-16 bg-white text-gray-900 shadow sm:rounded-lg flex justify-center flex-1`;
@@ -60,8 +61,19 @@ export default ({
   socialButtons = [
     {
       iconImageSrc: googleIconImageSrc,
-      text: "Sign In With Google",
-      url: "https://google.com"
+    text: "Sign In With Google",
+    onClick: async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        console.log("Usuário logado com Google:", user);
+        window.location.href = "/#";
+        // Aqui você pode redirecionar ou salvar no banco de dados
+      } catch (error) {
+        console.error("Erro no login com Google:", error);
+        window.location.href = "/login";
+      }
+    }
     },
     {
       iconImageSrc: twitterIconImageSrc,
@@ -87,7 +99,7 @@ export default ({
             <FormContainer>
               <SocialButtonsContainer>
                 {socialButtons.map((socialButton, index) => (
-                  <SocialButton key={index} href={socialButton.url}>
+                  <SocialButton key={index} as="button" onClick={socialButton.onClick}>
                     <span className="iconContainer">
                       <img src={socialButton.iconImageSrc} className="icon" alt=""/>
                     </span>

@@ -76,6 +76,11 @@ export default function Perfil() {
               </Field>
               <Field>
                 <InputWrapper>
+                  <Link href="/configuracao">Configuração</Link>
+                </InputWrapper>
+              </Field>
+              <Field>
+                <InputWrapper>
                   <Button onClick={handleLogout}>
                     Sair
                   </Button>

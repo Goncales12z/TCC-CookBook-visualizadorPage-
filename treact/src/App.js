@@ -91,6 +91,7 @@ import RestaurantLandingPage from "demos/RestaurantLandingPage.js";
 // import ServiceLandingPage from "demos/ServiceLandingPage.js";
 // import HostingCloudLandingPage from "demos/HostingCloudLandingPage.js";
 
+import RecipeDetailsPage from "./pages/RecipeDetailsPage.js";
 /* Inner Pages */
 
 import RegisterPage from "pages/RegisterPage.js";
@@ -125,6 +126,7 @@ export default function App() {
             path="/components/:type/:name"
             element={<ComponentRenderer />}
           />
+          <Route path="/receita/:slug" element={<RecipeDetailsPage />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/" element={<RestaurantLandingPage />} />
           <Route path="/perfil" element={<Perfil />} />

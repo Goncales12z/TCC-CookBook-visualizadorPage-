@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import tw from "twin.macro";
+//import { css } from "styled-components/macro"; //eslint-disable-line
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 //import Hero from "components/hero/TwoColumnWithVideo.js";
 import Header from "components/headers/light.js"; // Adicione esta linha
@@ -26,11 +27,6 @@ export default () => {
   const LancheText = tw.span`bg-pink-200 text-pink-800 px-4 rounded-lg font-bold`;
   const JantarText = tw.span`bg-blue-900 text-blue-100 px-4 rounded-lg font-bold`;
 
-  const SearchForm = tw.form`flex justify-center mt-5`;
-  const SearchContainer = tw.div`flex pt-20`;
-  const SearchInput = tw.input`p-4 text-xl rounded-l-full border-2 border-primary-500 outline-none w-[350px] max-w-[90vw]`;
-  const SearchButton = tw.button`px-8 py-4 text-xl rounded-r-full border-2 border-primary-500 bg-primary-500 text-gray-100 cursor-pointer font-bold`;
-
   function getPeriodo() {
     const hora = new Date().getHours();
     if (hora >= 4 && hora < 10) return <CafeText>café da manhã?</CafeText>;
@@ -44,23 +40,47 @@ export default () => {
   return (
     <AnimationRevealPage disabled>
       <Header /> {/* Adiciona o menu com os botões de navegação */}
-      <SearchForm
+      <form
         onSubmit={(e) => {
           e.preventDefault();
           alert(`Você pesquisou por: ${search}`);
           // Aqui você pode filtrar dados, chamar API, etc.
         }}
+        style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
       >
-        <SearchContainer id="search-bar">
-          <SearchInput
-            type="text"
-            placeholder="Pesquise por pratos"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <SearchButton type="submit">Buscar</SearchButton>
-        </SearchContainer>
-      </SearchForm>
+      <div id="search-bar" style={{ display: "flex", paddingTop: "80px" }}>
+        <input
+          type="text"
+          placeholder="Pesquise por pratos"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{
+            padding: "1rem 1rem",
+            fontSize: "1.25rem",
+            borderRadius: "30px 0 0 30px",
+            border: "2px solid #6415ff",
+            outline: "none",
+            width: "350px",
+            maxWidth: "90vw",
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: "1rem 2rem",
+            fontSize: "1.25rem",
+            borderRadius: "0 30px 30px 0",
+            border: "2px solid #6415ff",
+            background: "#6415ff",
+            color: "#fff",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Buscar
+        </button>
+        </div>
+      </form>
       <TabGrid heading={<>O que você quer fazer de {getPeriodo()}</>} />
       {/*<section
         id="sobre-nos"

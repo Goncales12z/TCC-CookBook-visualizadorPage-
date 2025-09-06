@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import tw from "twin.macro";
 import styled from "styled-components";
 import { css } from "styled-components/macro"; //eslint-disable-line
@@ -25,7 +26,7 @@ const TabControl = styled.div`
 
 const TabContent = tw(motion.div)`mt-6 flex flex-wrap sm:-mr-10 md:-mr-6 lg:-mr-12`;
 const CardContainer = tw.div`mt-10 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 sm:pr-10 md:pr-6 lg:pr-12`;
-const Card = tw(motion.a)`bg-gray-200 rounded-b block max-w-xs mx-auto sm:max-w-none sm:mx-0`;
+const Card = styled(motion(Link))`bg-gray-200 rounded-b block max-w-xs mx-auto sm:max-w-none sm:mx-0`;
 const CardImageContainer = styled.div`
   ${props => css`background-image: url("${props.imageSrc}");`}
   ${tw`h-56 xl:h-64 bg-center bg-cover relative rounded-t`}
@@ -63,84 +64,143 @@ export default ({
   tabs = {
     Starters: [
       {
-        imageSrc:
-          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-        title: "Veg Mixer",
-        content: "Tomato Salad & Carrot",
+        imageSrc: 
+          "https://www.estadao.com.br/resizer/v2/3MOX4CLWZVFHDKSRKXZFHO24EU.jpg?auth=2cb1e3d8335175bc90639a6fdf5e553cb4673e60ce6fcb8ac420ec34f5b3ccda",
+        title: "Bruschetta de tomate e manjericão",
+        content: "Tomate e Pão italiano",
         price: "$5.99",
         rating: "5.0",
         reviews: "87",
-        url: "#"
+        url: "#", // Manteremos isso por enquanto, vamos trocar por um link no final
+        slug: "bruschetta-de-tomate-e-manjericao",
+        ingredients: ["tomate", "manjericão", "pão italiano", "azeite", "alho", "sal"],
+        preparation: [
+          "Corte o pão italiano em fatias de espessura média.",
+          "Pique os tomates em cubos pequenos e o alho finamente.",
+          "Em uma tigela, misture o tomate, o alho, o manjericão fresco, o azeite e o sal.",
+          "Toste levemente as fatias de pão.",
+          "Coloque a mistura de tomate sobre as fatias de pão tostadas e sirva imediatamente."
+        ]
       },
       {
         imageSrc:
-          "https://images.unsplash.com/photo-1432139555190-58524dae6a55?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-        title: "Macaroni",
-        content: "Cheese Pizza",
+          "https://www.minhareceita.com.br/app/uploads/2025/02/carpaccio-de-carne-portal-minha-receita.webp",
+        title: "Carpaccio de carne",
+        content: "Filé-mignon e Queijo parmesão",
         price: "$2.99",
         rating: "4.8",
         reviews: "32",
-        url: "#"
+        url: "#",
+        slug: "carpaccio-de-carne",
+        ingredients: ["filé-mignon", "queijo parmesão", "alcaparras", "azeite", "limão", "sal", "pimenta do reino"],
+        preparation: [
+          "Corte o filé-mignon congelado em fatias muito finas.",
+          "Disponha as fatias de carne sobre um prato grande.",
+          "Prepare o molho misturando azeite, suco de limão, sal e pimenta.",
+          "Regue a carne com o molho e espalhe as alcaparras e o queijo parmesão ralado por cima."
+        ]
       },
       {
         imageSrc:
-          "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327??ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-        title: "Nelli",
-        content: "Hamburger & Fries",
+          "https://s2-receitas.glbimg.com/g8xJERPO0rD8arQTLRw7hogSU_A=/0x0:690x460/984x0/smart/filters:strip_icc()/s.glbimg.com/po/rc/media/2013/11/29/16_28_16_103_Salada_Caprese_Faby_c_pia.jpg",
+        title: "Salada Caprese",
+        content: "Mussarela de búfala e Tomate",
         price: "$7.99",
         rating: "4.9",
         reviews: "89",
-        url: "#"
+        url: "#",
+        slug: "salada-caprese",
+        ingredients: ["mussarela de búfala", "tomate", "manjericão", "azeite", "sal"],
+        preparation: [
+          "Fatie os tomates e a mussarela de búfala.",
+          "Intercale as fatias de tomate e mussarela em um prato.",
+          "Decore com folhas de manjericão fresco, regue com azeite e tempere com sal."
+        ]
       },
       {
         imageSrc:
-          "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-        title: "Jalapeno Poppers",
-        content: "Crispy Soyabeans",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5uCgg7xSUR6JzIGNzFPyFHauCHYJnbVSh1w&s",
+        title: "Tartare de salmão com abacate",
+        content: "Salmão e Abacate",
         price: "$8.99",
         rating: "4.6",
         reviews: "12",
-        url: "#"
+        url: "#",
+        slug: "tartare-de-salmao-com-abacate",
+        ingredients: ["salmão", "abacate", "cebola roxa", "limão", "azeite", "cebolinha", "sal"],
+        preparation: [
+          "Pique o salmão fresco e o abacate em cubos pequenos.",
+          "Pique a cebola roxa e a cebolinha.",
+          "Misture todos os ingredientes delicadamente e tempere com azeite, suco de limão e sal."
+        ]
       },
       {
         imageSrc:
-          "https://images.unsplash.com/photo-1473093226795-af9932fe5856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-        title: "Cajun Chicken",
-        content: "Roasted Chicken & Egg",
+          "https://claudia.abril.com.br/wp-content/uploads/2020/02/receita-sopa-creme-abobora-gengibre.jpg?quality=70&strip=info&w=620",
+        title: "Creme de abóbora com gengibre",
+        content: "Abóbora e Gengibre",
         price: "$7.99",
         rating: "4.2",
         reviews: "19",
-        url: "#"
+        url: "#",
+        slug: "creme-de-abobora-com-gengibre",
+        ingredients: ["abóbora", "gengibre", "cebola", "alho", "caldo de legumes", "creme de leite"],
+        preparation: [
+          "Cozinhe a abóbora com cebola, alho e gengibre no caldo de legumes até ficar macia.",
+          "Bata tudo no liquidificador até obter um creme homogêneo.",
+          "Volte o creme para a panela, adicione o creme de leite e aqueça sem deixar ferver."
+        ]
       },
       {
         imageSrc:
-          "https://images.unsplash.com/photo-1550461716-dbf266b2a8a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-        title: "Chillie Cake",
-        content: "Deepfried Chicken",
+          "https://arosa.com.br/wp-content/uploads/2024/04/3Cestinhos-de-Massa-Fillo-com-Salada-Caprese_3012-copy.jpg",
+        title: "Cestinha de massa folhada",
+        content: "Massa folhada e Queijo brie",
         price: "$2.99",
         rating: "5.0",
         reviews: "61",
-        url: "#"
+        url: "#",
+        slug: "cestinha-de-massa-folhada",
+        ingredients: ["massa folhada", "queijo brie", "geleia de damasco", "nozes"],
+        preparation: [
+          "Corte a massa folhada em quadrados e coloque em forminhas de muffin.",
+          "Adicione um pedaço de queijo brie em cada cestinha.",
+          "Asse até dourar e sirva com geleia de damasco e nozes por cima."
+        ]
       },
       {
         imageSrc:
-          "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-        title: "Guacamole Mex",
-        content: "Mexican Chilli",
+          "https://pastelitoscaruaru.s3.us-east-2.amazonaws.com/product/1632409090.jpg",
+        title: "Pastéis de queijo com pimenta biquinho",
+        content: "Queijo e Pimenta biquinho",
         price: "$3.99",
         rating: "4.2",
         reviews: "95",
-        url: "#"
+        url: "#",
+        slug: "pasteis-de-queijo-com-pimenta-biquinho",
+        ingredients: ["massa de pastel", "queijo minas", "pimenta biquinho", "óleo para fritar"],
+        preparation: [
+          "Recheie os discos de massa de pastel com queijo minas e pimenta biquinho.",
+          "Feche os pastéis, apertando as bordas com um garfo.",
+          "Frite em óleo quente até dourarem."
+        ]
       },
       {
         imageSrc:
-          "https://images.unsplash.com/photo-1565310022184-f23a884f29da?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-        title: "Carnet Nachos",
-        content: "Chilli Crispy Nachos",
+          "https://www.minhareceita.com.br/app/uploads/2022/03/camarao-mobile.jpg",
+        title: "Camarão empanado com coco",
+        content: "Camarão e Coco",
         price: "$3.99",
         rating: "3.9",
         reviews: "26",
-        url: "#"
+        url: "#",
+        slug: "camarao-empanado-com-coco",
+        ingredients: ["camarão", "coco ralado", "farinha de trigo", "ovo", "sal", "pimenta", "óleo para fritar"],
+        preparation: [
+          "Tempere os camarões com sal e pimenta.",
+          "Passe cada camarão no ovo batido e depois na mistura de farinha de trigo com coco ralado.",
+          "Frite em óleo quente até ficarem dourados e crocantes."
+        ]
       }
     ],
     Main: getRandomCards(),
@@ -191,7 +251,7 @@ export default ({
           >
             {tabs[tabKey].map((card, index) => (
               <CardContainer key={index}>
-                <Card className="group" href={card.url} initial="rest" whileHover="hover" animate="rest">
+                <Card className="group" to={`/receita/${card.slug}`} initial="rest" whileHover="hover" animate="rest">
                   <CardImageContainer imageSrc={card.imageSrc}>
                     <CardRatingContainer>
                       <CardRating>
@@ -213,7 +273,7 @@ export default ({
                       }}
                       transition={{ duration: 0.3 }}
                     >
-                      <CardButton>Buy Now</CardButton>
+                      <CardButton>Ver Receita</CardButton>
                     </CardHoverOverlay>
                   </CardImageContainer>
                   <CardText>

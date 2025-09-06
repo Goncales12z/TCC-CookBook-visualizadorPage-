@@ -6,6 +6,7 @@ import tw from "twin.macro";
 import { css } from "styled-components/macro"; //eslint-disable-line
 
 import Header from "components/headers/light.js";
+import Footer from "components/footers/FiveColumnWithInputForm.js";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import { SectionHeading } from "components/misc/Headings.js";
 
@@ -18,13 +19,16 @@ const Image = styled.div(props => [
   `background-image: url("${props.imageSrc}");`,
   tw`h-96 bg-cover bg-center rounded-lg`
 ]);
-const Title = tw(SectionHeading)`mt-8`;
-const IngredientsContainer = tw.div`mt-8`;
-const Subtitle = tw.h3`text-2xl font-bold mt-12 mb-4`;
-const IngredientsList = tw.ul`list-disc list-inside text-lg`;
-const Ingredient = tw.li`mb-2`;
-const PreparationList = tw.ol`list-decimal list-inside text-lg`;
-const Step = tw.li`mb-4 leading-relaxed`;
+const Title = tw(SectionHeading)`mt-8 text-left`;
+const DetailsContainer = tw.div`mt-12`;
+const TwoColumn = tw.div`flex flex-col md:flex-row justify-between`;
+const Column = tw.div`md:w-5/12`;
+
+const Subtitle = tw.h3`text-2xl font-bold mt-6 mb-6`;
+const IngredientsList = tw.ul`list-disc list-inside text-lg space-y-2`;
+const Ingredient = tw.li``;
+const PreparationList = tw.ol`list-decimal list-inside text-lg space-y-4`;
+const Step = tw.li`leading-relaxed`;
 
 export default () => {
   const { slug } = useParams(); // Pega o "slug" da URL
@@ -44,37 +48,43 @@ export default () => {
             <Title>Receita não encontrada!</Title>
           </Content>
         </Container>
+        <Footer />
       </AnimationRevealPage>
     );
   }
 
   return (
-    <AnimationRevealPage>
+    <AnimationRevealPage disabled>
       <Header />
       <Container>
         <Content>
           <Image imageSrc={recipe.imageSrc} />
           <Title>{recipe.title}</Title>
-          
-          <IngredientsContainer>
-            <Subtitle>Ingredientes</Subtitle>
-            <IngredientsList>
-              {recipe.ingredients.map((ingredient, index) => (
-                <Ingredient key={index}>{ingredient}</Ingredient>
-              ))}
-            </IngredientsList>
-          </IngredientsContainer>
+          <p tw="text-gray-600 mt-4">{recipe.content}</p>
 
-          <div>
-            <Subtitle>Modo de Preparo</Subtitle>
-            <PreparationList>
-              {recipe.preparation.map((step, index) => (
-                <Step key={index}>{step}</Step>
-              ))}
-            </PreparationList>
-          </div>
+          <DetailsContainer>
+            <TwoColumn>
+              <Column>
+                <Subtitle>Ingredientes</Subtitle>
+                <IngredientsList>
+                  {recipe.ingredients.map((ingredient, index) => (
+                    <Ingredient key={index}>{ingredient}</Ingredient>
+                  ))}
+                </IngredientsList>
+              </Column>
+              <Column>
+                <Subtitle>Modo de Preparo</Subtitle>
+                <PreparationList>
+                  {recipe.preparation.map((step, index) => (
+                    <Step key={index}>{step}</Step>
+                  ))}
+                </PreparationList>
+              </Column>
+            </TwoColumn>
+          </DetailsContainer>
         </Content>
       </Container>
+      <Footer />
     </AnimationRevealPage>
   );
 };

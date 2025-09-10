@@ -11,7 +11,7 @@ import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import { SectionHeading } from "components/misc/Headings.js";
 
 // Importando os dados diretamente. Em um app maior, isso viria de uma API ou estado global.
-import { default as TABS_DATA } from "components/cards/TabCardGrid.js";
+import { tabsData } from "components/cards/TabCardGrid.js";
 
 const Container = tw.div`relative`;
 const Content = tw.div`max-w-screen-xl mx-auto py-20 lg:py-24`;
@@ -34,7 +34,7 @@ export default () => {
   const { slug } = useParams(); // Pega o "slug" da URL
 
   // Junta todos os pratos de todas as abas em uma única lista
-  const allDishes = Object.values(TABS_DATA({}).tabs).flat();
+  const allDishes = Object.values(tabsData).flat();
   
   // Encontra o prato que corresponde ao slug da URL
   const recipe = allDishes.find(dish => dish.slug === slug);

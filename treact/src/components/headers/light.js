@@ -84,6 +84,7 @@ export default ({
       <NavLink href="/#">Home</NavLink>
       <NavLink href="/aboutus">Sobre Nós</NavLink>
       <NavLink href="/perfil">Perfil</NavLink>
+      <NavLink href="/geladeira">Geladeira</NavLink>
     </NavLinks>,
   ];
 

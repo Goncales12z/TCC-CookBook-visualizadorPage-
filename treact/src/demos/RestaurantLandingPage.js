@@ -49,9 +49,39 @@ export default () => {
     <AnimationRevealPage disabled>
       <Header />
       <FormContainer
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           alert(`Você pesquisou por: ${search}`);
+          // Aqui você pode filtrar dados, chamar API, etc.
+          try {
+                const response = await fetch("http://localhost/TCC/php/processo.php", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        search: search
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`Receita gerada: ${data.receita}`);
+                    // result.classList.remove('error');
+                    // result.style.display = 'block';
+                } else {
+                    alert(`Erro: ${data.error}`);
+                    // resultText.textContent = data.error || 'Erro ao processar solicitação.';
+                    // result.classList.add('error');
+                    // result.style.display = 'block';
+                }
+            } catch (error) {
+                alert('Erro de conexão com o servidor.');
+                // resultText.textContent = 'Erro de conexão com o servidor.';
+                // result.classList.add('error');
+                // result.style.display = 'block';
+            }
         }}
       >
         <SearchBarWrapper>

@@ -66,16 +66,7 @@ export default () => {
         />
         <button
           type="submit"
-          style={{
-            padding: "1rem 2rem",
-            fontSize: "1.25rem",
-            borderRadius: "0 30px 30px 0",
-            border: "2px solid #6415ff",
-            background: "#6415ff",
-            color: "#fff",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          className="p-4 px-8 text-lg rounded-r-full border-2 border-primary-700 bg-primary-700 text-white font-bold"
         >
           Buscar
         </button>

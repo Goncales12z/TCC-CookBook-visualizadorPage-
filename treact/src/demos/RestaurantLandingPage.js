@@ -3,6 +3,7 @@ import tw from "twin.macro";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import Header from "components/headers/light.js";
 import TabGrid from "components/cards/TabCardGrid.js";
+import { tabsData } from "components/cards/TabCardGrid.js";
 
 const FormContainer = tw.form`flex justify-center mt-8 w-full`;
 const SearchBarWrapper = tw.div`flex w-full max-w-xl px-2`;
@@ -94,7 +95,10 @@ export default () => {
           <SearchButton type="submit">Buscar</SearchButton>
         </SearchBarWrapper>
       </FormContainer>
-      <TabGrid heading={<>O que você quer fazer de {getPeriodo()}</>} />
+      <TabGrid
+        heading={<>O que você quer fazer de {getPeriodo()}</>}
+        tabs={tabsData}
+      />
     </AnimationRevealPage>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState} from "react";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import { Container as ContainerBase } from "components/misc/Layouts";
 import tw from "twin.macro";
@@ -48,11 +48,42 @@ const SubmitButton = styled.button`
     ${tw`ml-3`}
   }
 `;
-const IllustrationContainer = tw.div`sm:rounded-r-lg flex-1 bg-purple-100 text-center hidden lg:flex justify-center`;
-const IllustrationImage = styled.div`
-  ${props => `background-image: url("${props.imageSrc}");`}
-  ${tw`m-12 xl:m-16 w-full max-w-sm bg-contain bg-center bg-no-repeat`}
-`;
+
+
+const imageAndWords = [
+  { img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", word: "Receitas" },
+  { img: "https://images.unsplash.com/photo-1528712306091-ed0763094c98?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Q3VsaW4lQzMlQTFyaWF8ZW58MHx8MHx8fDA%3D", word: "Culinária" },
+  { img: "https://images.unsplash.com/photo-1745090054769-b002cdb7d33d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGluc3BpcmElQzMlQTclQzMlQTNvJTIwY2FmJUMzJUE5fGVufDB8fDB8fHww", word: "Inspiração" },
+  { img: "https://images.unsplash.com/photo-1494597564530-871f2b93ac55?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8U2ElQzMlQkFkZXxlbnwwfHwwfHx8MA%3D%3D", word: "Saúde" },
+];
+
+function RotatingIllustration() {
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+      const timer = setInterval(() => {
+        setIndex((prev) => (prev + 1) % imageAndWords.length);
+      }, 2500);
+      return () => clearInterval(timer);
+    }, []);
+
+    return (
+      <div tw="w-full h-full flex flex-col items-center justify-center">
+        <img
+          src={imageAndWords[index].img}
+          alt={imageAndWords[index].word}
+          tw="w-full h-96 object-cover rounded-xl shadow-lg transition-all duration-700"
+        />
+        <span tw="mt-6 text-3xl font-bold text-primary-700 animate-pulse bg-white bg-opacity-75 px-6 py-2 rounded-xl shadow">
+          {imageAndWords[index].word}
+        </span>
+
+      </div>
+    );
+    
+  }
+
+const IllustrationContainer = tw.div`flex-1 flex flex-col justify-center items-center bg-gray-100 rounded-r-2xl p-8 min-w-[350px]`; // coluna do carrossel
 
 export default ({
   logoLinkUrl = "#",
@@ -90,6 +121,7 @@ export default ({
   <AnimationRevealPage>
     <Container>
       <Content>
+        {/* Coluna do formulário */}
         <MainContainer>
           <LogoLink href={logoLinkUrl}>
             <LogoImage src={logo} />
@@ -125,15 +157,16 @@ export default ({
               </p>
               <p tw="mt-8 text-sm text-gray-600 text-center">
                 Dont have an account?{" "}
-                <a href={signupUrl} tw="border-b border-gray-500 border-dotted">
+                <a href="/register" tw="border-b border-gray-500 border-dotted">
                   Sign Up
                 </a>
               </p>
             </FormContainer>
           </MainContent>
         </MainContainer>
+        {/* Coluna do carrossel */}
         <IllustrationContainer>
-          <IllustrationImage imageSrc={illustrationImageSrc} />
+          <RotatingIllustration />
         </IllustrationContainer>
       </Content>
     </Container>

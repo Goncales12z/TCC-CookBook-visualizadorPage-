@@ -23,6 +23,7 @@ const Input = tw.input`
 const Button = tw.button`w-full bg-primary-500 text-white font-bold py-3 rounded-lg hover:bg-primary-700 transition mb-2 mt-2`;
 const LinkText = tw.a`block text-center text-primary-500 hover:underline mt-2`;
 
+
 export default function RegisterPage() {
   return (
     <AnimationRevealPage>

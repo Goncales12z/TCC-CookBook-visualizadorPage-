@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import tw from "twin.macro";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import Header from "components/headers/light.js";
@@ -35,6 +35,7 @@ const AlmocoText = tw.span`bg-green-300 text-green-900 px-4 rounded-lg font-bold
 const LancheText = tw.span`bg-pink-200 text-pink-800 px-4 rounded-lg font-bold`;
 const JantarText = tw.span`bg-blue-900 text-blue-100 px-4 rounded-lg font-bold`;
 
+const WelcomeMessage = tw.h2`text-2xl font-semibold text-center text-primary-700 my-8`;
 // Componente para exibir o resultado
 const ResultContainer = tw.div`mt-8 p-6 bg-gray-100 rounded-lg shadow-md max-w-4xl mx-auto`;
 const ResultTitle = tw.h3`text-2xl font-bold text-gray-800`;
@@ -42,10 +43,19 @@ const ResultText = tw.p`mt-4 text-gray-600 whitespace-pre-wrap`;
 const ErrorText = tw.p`mt-4 text-red-600 font-bold`;
 
 export default () => {
+  const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
   const [recipeResult, setRecipeResult] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Verifica se há um usuário logado no localStorage quando a página carrega
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      setUser(JSON.parse(loggedInUser));
+    }
+  }, []);
 
   function getPeriodo() {
     const hora = new Date().getHours();
@@ -58,6 +68,11 @@ export default () => {
   return (
     <AnimationRevealPage disabled>
       <Header />
+
+      {/* Exibe a mensagem de boas-vindas se o usuário estiver logado */}
+      {user && (
+        <WelcomeMessage>Bem vindo, {user.nome_usuario}!</WelcomeMessage>
+      )}
       <FormContainer
         onSubmit={async (e) => {
           e.preventDefault();

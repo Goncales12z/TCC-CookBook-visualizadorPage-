@@ -35,8 +35,17 @@ const AlmocoText = tw.span`bg-green-300 text-green-900 px-4 rounded-lg font-bold
 const LancheText = tw.span`bg-pink-200 text-pink-800 px-4 rounded-lg font-bold`;
 const JantarText = tw.span`bg-blue-900 text-blue-100 px-4 rounded-lg font-bold`;
 
+// Componente para exibir o resultado
+const ResultContainer = tw.div`mt-8 p-6 bg-gray-100 rounded-lg shadow-md max-w-4xl mx-auto`;
+const ResultTitle = tw.h3`text-2xl font-bold text-gray-800`;
+const ResultText = tw.p`mt-4 text-gray-600 whitespace-pre-wrap`;
+const ErrorText = tw.p`mt-4 text-red-600 font-bold`;
+
 export default () => {
   const [search, setSearch] = useState("");
+  const [recipeResult, setRecipeResult] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function getPeriodo() {
     const hora = new Date().getHours();
@@ -52,37 +61,32 @@ export default () => {
       <FormContainer
         onSubmit={async (e) => {
           e.preventDefault();
-          alert(`Você pesquisou por: ${search}`);
           // Aqui você pode filtrar dados, chamar API, etc.
+          setRecipeResult(null); // Limpa resultado anterior
+          setError(null); // Limpa erro anterior
+          setIsLoading(true);
+
           try {
                 const response = await fetch("http://localhost/TCC/php/processo.php", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        search: search
-                    })
+                    body: JSON.stringify({ search: search })
                 });
                 
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert(`Receita gerada: ${data.receita}`);
-                    // result.classList.remove('error');
-                    // result.style.display = 'block';
+                    setRecipeResult({ name: data.elements_used, instructions: data.receita });
                 } else {
-                    alert(`Erro: ${data.error}`);
-                    // resultText.textContent = data.error || 'Erro ao processar solicitação.';
-                    // result.classList.add('error');
-                    // result.style.display = 'block';
+                    setError(data.error || 'Erro ao processar solicitação.');
                 }
             } catch (error) {
-                alert('Erro de conexão com o servidor.');
-                // resultText.textContent = 'Erro de conexão com o servidor.';
-                // result.classList.add('error');
-                // result.style.display = 'block';
+                setError('Erro de conexão com o servidor. Verifique se o XAMPP e a IA estão rodando.');
             }
+
+          setIsLoading(false);
         }}
       >
         <SearchBarWrapper>
@@ -92,9 +96,20 @@ export default () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <SearchButton type="submit">Buscar</SearchButton>
+          <SearchButton type="submit" disabled={isLoading}>{isLoading ? "Buscando..." : "Buscar"}</SearchButton>
         </SearchBarWrapper>
       </FormContainer>
+
+      {/* Exibição do resultado ou erro */}
+      {isLoading && <ResultContainer><ResultText>Gerando receita, por favor aguarde...</ResultText></ResultContainer>}
+      {error && <ResultContainer><ErrorText>{error}</ErrorText></ResultContainer>}
+      {recipeResult && (
+        <ResultContainer>
+          <ResultTitle>Receita para: {recipeResult.name}</ResultTitle>
+          <ResultText>{recipeResult.instructions}</ResultText>
+        </ResultContainer>
+      )}
+
       <TabGrid
         heading={<>O que você quer fazer de {getPeriodo()}</>}
         tabs={tabsData}

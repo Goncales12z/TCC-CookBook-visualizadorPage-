@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import tw from "twin.macro";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import Header from "components/headers/light.js";
 //import Footer from "components/footers/FiveColumnWithInputForm.js";
-import { Mail, User, Lock } from "react-feather"; // Instale react-feather se não tiver
+import { Mail, User, Lock, Calendar } from "react-feather"; // Instale react-feather se não tiver
+
 
 const Container = tw.div`min-h-screen bg-gray-100 flex flex-col`;
 const Content = tw.div`flex-1 flex flex-col items-center justify-center px-4`;
@@ -22,9 +23,65 @@ const Input = tw.input`
 `;
 const Button = tw.button`w-full bg-primary-500 text-white font-bold py-3 rounded-lg hover:bg-primary-700 transition mb-2 mt-2`;
 const LinkText = tw.a`block text-center text-primary-500 hover:underline mt-2`;
+const Message = tw.p`text-center mt-4`;
+const ErrorMessage = tw(Message)`text-red-500`;
+const SuccessMessage = tw(Message)`text-green-500`;
 
 
 export default function RegisterPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    birthdate: "",
+    password: "",
+    confirm: "",
+  });
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setMessage(null);
+    setIsLoading(true);
+
+    if (formData.password !== formData.confirm) {
+      setError("As senhas não coincidem.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost/TCC/php/register.php", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage(data.message + " Você será redirecionado para o login.");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 3000);
+      } else {
+        setError(data.error || 'Ocorreu um erro ao criar a conta.');
+      }
+    } catch (err) {
+      setError('Não foi possível conectar ao servidor. Tente novamente mais tarde.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AnimationRevealPage>
       <Header />
@@ -33,7 +90,7 @@ export default function RegisterPage() {
           <FormContainer>
             <Title>Criar Conta</Title>
             <Subtitle>Preencha os campos para se cadastrar</Subtitle>
-            <form>
+            <form onSubmit={handleSubmit}>
               <Field>
                 <Label htmlFor="name">Nome</Label>
                 <InputWrapper>
@@ -45,6 +102,8 @@ export default function RegisterPage() {
                     type="text"
                     placeholder="Seu nome"
                     required
+                    value={formData.name}
+                    onChange={handleChange}
                   />
                 </InputWrapper>
               </Field>
@@ -59,6 +118,24 @@ export default function RegisterPage() {
                     type="email"
                     placeholder="Seu e-mail"
                     required
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </InputWrapper>
+              </Field>
+              <Field>
+                <Label htmlFor="birthdate">Data de Nascimento</Label>
+                <InputWrapper>
+                  <Icon>
+                    <Calendar size={20} />
+                  </Icon>
+                  <Input
+                    id="birthdate"
+                    type="date"
+                    required
+                    value={formData.birthdate}
+                    onChange={handleChange}
+                    css={tw`pr-4`} // Ajuste para não sobrepor o ícone do calendário
                   />
                 </InputWrapper>
               </Field>
@@ -73,6 +150,8 @@ export default function RegisterPage() {
                     type="password"
                     placeholder="Senha"
                     required
+                    value={formData.password}
+                    onChange={handleChange}
                   />
                 </InputWrapper>
               </Field>
@@ -87,11 +166,15 @@ export default function RegisterPage() {
                     type="password"
                     placeholder="Confirmar senha"
                     required
+                    value={formData.confirm}
+                    onChange={handleChange}
                   />
                 </InputWrapper>
               </Field>
-              <Button type="submit">Criar Conta</Button>
+              <Button type="submit" disabled={isLoading}>{isLoading ? "Criando conta..." : "Criar Conta"}</Button>
             </form>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+            {message && <SuccessMessage>{message}</SuccessMessage>}
             <LinkText href="/login">Já tem uma conta? Entrar</LinkText>
           </FormContainer>
         </Content>

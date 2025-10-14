@@ -1,174 +1,119 @@
-import React, { useEffect, useState} from "react";
-import AnimationRevealPage from "helpers/AnimationRevealPage.js";
-import { Container as ContainerBase } from "components/misc/Layouts";
+import React, { useState } from "react";
 import tw from "twin.macro";
-import styled from "styled-components";
-import {css} from "styled-components/macro"; //eslint-disable-line
-import illustration from "images/login-illustration.svg";
-import logo from "../imagens/logo.png";
-import googleIconImageSrc from "images/google-icon.png";
-import twitterIconImageSrc from "images/twitter-icon.png";
-import { ReactComponent as LoginIcon } from "feather-icons/dist/icons/log-in.svg";
-import { auth, provider, signInWithPopup } from "../firebase.js";
+import AnimationRevealPage from "helpers/AnimationRevealPage.js";
+import Header from "components/headers/light.js";
+import { Mail, Lock } from "react-feather";
 
-const Container = tw(ContainerBase)`min-h-screen bg-primary-900 text-white font-medium flex justify-center -m-8`;
-const Content = tw.div`max-w-screen-xl m-0 sm:mx-20 sm:my-16 bg-white text-gray-900 shadow sm:rounded-lg flex justify-center flex-1`;
-const MainContainer = tw.div`lg:w-1/2 xl:w-5/12 p-6 sm:p-12`;
-const LogoLink = tw.a``;
-const LogoImage = tw.img`h-12 mx-auto`;
-const MainContent = tw.div`mt-12 flex flex-col items-center`;
-const Heading = tw.h1`text-2xl xl:text-3xl font-extrabold`;
-const FormContainer = tw.div`w-full flex-1 mt-8`;
-
-const SocialButtonsContainer = tw.div`flex flex-col items-center`;
-const SocialButton = styled.a`
-  ${tw`w-full max-w-xs font-semibold rounded-lg py-3 border text-gray-900 bg-gray-100 hocus:bg-gray-200 hocus:border-gray-400 flex items-center justify-center transition-all duration-300 focus:outline-none focus:shadow-outline text-sm mt-5 first:mt-0`}
-  .iconContainer {
-    ${tw`bg-white p-2 rounded-full`}
-  }
-  .icon {
-    ${tw`w-4`}
-  }
-  .text {
-    ${tw`ml-4`}
-  }
+const Container = tw.div`min-h-screen bg-gray-100 flex flex-col`;
+const Content = tw.div`flex-1 flex flex-col items-center justify-center px-4`;
+const FormContainer = tw.div`bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md`;
+const Title = tw.h2`text-3xl font-bold text-center text-primary-700 mb-2`;
+const Subtitle = tw.p`text-center text-gray-500 mb-6`;
+const Field = tw.div`mb-4`;
+const Label = tw.label`block mb-1 font-semibold text-gray-700`;
+const InputWrapper = tw.div`relative`;
+const Icon = tw.span`absolute left-0 top-1/2 transform -translate-y-1/2 text-primary-500`;
+const Input = tw.input`
+  w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg
+  focus:outline-none focus:border-primary-500 transition
+  bg-white text-gray-800 placeholder-gray-400
+  shadow-sm
 `;
+const Button = tw.button`w-full bg-primary-500 text-white font-bold py-3 rounded-lg hover:bg-primary-700 transition mb-2 mt-2`;
+const LinkText = tw.a`block text-center text-primary-500 hover:underline mt-2`;
+const Message = tw.p`text-center mt-4`;
+const ErrorMessage = tw(Message)`text-red-500`;
 
-const DividerTextContainer = tw.div`my-12 border-b text-center relative`;
-const DividerText = tw.div`leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform -translate-y-1/2 absolute inset-x-0 top-1/2 bg-transparent`;
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-const Form = tw.form`mx-auto max-w-xs`;
-const Input = tw.input`w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 first:mt-0`;
-const SubmitButton = styled.button`
-  ${tw`mt-5 tracking-wide font-semibold bg-primary-500 text-gray-100 w-full py-4 rounded-lg hover:bg-primary-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none`}
-  .icon {
-    ${tw`w-6 h-6 -ml-2`}
-  }
-  .text {
-    ${tw`ml-3`}
-  }
-`;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
+    try {
+      const response = await fetch("http://localhost/TCC/php/login.php", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password })
+      });
 
-const imageAndWords = [
-  { img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", word: "Receitas" },
-  { img: "https://images.unsplash.com/photo-1528712306091-ed0763094c98?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Q3VsaW4lQzMlQTFyaWF8ZW58MHx8MHx8fDA%3D", word: "Culinária" },
-  { img: "https://images.unsplash.com/photo-1745090054769-b002cdb7d33d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGluc3BpcmElQzMlQTclQzMlQTNvJTIwY2FmJUMzJUE5fGVufDB8fDB8fHww", word: "Inspiração" },
-  { img: "https://images.unsplash.com/photo-1494597564530-871f2b93ac55?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8U2ElQzMlQkFkZXxlbnwwfHwwfHx8MA%3D%3D", word: "Saúde" },
-];
+      const data = await response.json();
 
-function RotatingIllustration() {
-    const [index, setIndex] = useState(0);
-
-    useEffect(() => {
-      const timer = setInterval(() => {
-        setIndex((prev) => (prev + 1) % imageAndWords.length);
-      }, 2500);
-      return () => clearInterval(timer);
-    }, []);
-
-    return (
-      <div tw="w-full h-full flex flex-col items-center justify-center">
-        <img
-          src={imageAndWords[index].img}
-          alt={imageAndWords[index].word}
-          tw="w-full h-96 object-cover rounded-xl shadow-lg transition-all duration-700"
-        />
-        <span tw="mt-6 text-3xl font-bold text-primary-700 animate-pulse bg-white bg-opacity-75 px-6 py-2 rounded-xl shadow">
-          {imageAndWords[index].word}
-        </span>
-
-      </div>
-    );
-    
-  }
-
-const IllustrationContainer = tw.div`flex-1 flex flex-col justify-center items-center bg-gray-100 rounded-r-2xl p-8 min-w-[350px]`; // coluna do carrossel
-
-export default ({
-  logoLinkUrl = "#",
-  illustrationImageSrc = illustration,
-  headingText = "Sign In To Treact",
-  socialButtons = [
-    {
-      iconImageSrc: googleIconImageSrc,
-    text: "Sign In With Google",
-    onClick: async () => {
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        console.log("Usuário logado com Google:", user);
-        window.location.href = "/#";
-        // Aqui você pode redirecionar ou salvar no banco de dados
-      } catch (error) {
-        console.error("Erro no login com Google:", error);
-        window.location.href = "/login";
+      if (response.ok && data.success) {
+        // Login bem-sucedido!
+        // Salva os dados do usuário no localStorage para mantê-lo logado
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Redireciona para a página de perfil
+        window.location.href = "/perfil";
+      } else {
+        // Erro de login (e-mail/senha errados, etc.)
+        setError(data.error || 'Ocorreu um erro ao fazer login.');
       }
+    } catch (err) {
+      setError('Não foi possível conectar ao servidor. Tente novamente mais tarde.');
+    } finally {
+      setIsLoading(false);
     }
-    },
-    {
-      iconImageSrc: twitterIconImageSrc,
-      text: "Sign In With Twitter",
-      url: "https://twitter.com"
-    }
-  ],
-  submitButtonText = "Sign In",
-  SubmitButtonIcon = LoginIcon,
-  forgotPasswordUrl = "#",
-  signupUrl = "#",
+  };
 
-}) => (
-  <AnimationRevealPage>
-    <Container>
-      <Content>
-        {/* Coluna do formulário */}
-        <MainContainer>
-          <LogoLink href={logoLinkUrl}>
-            <LogoImage src={logo} />
-          </LogoLink>
-          <MainContent>
-            <Heading>{headingText}</Heading>
-            <FormContainer>
-              <SocialButtonsContainer>
-                {socialButtons.map((socialButton, index) => (
-                  <SocialButton key={index} as="button" onClick={socialButton.onClick}>
-                    <span className="iconContainer">
-                      <img src={socialButton.iconImageSrc} className="icon" alt=""/>
-                    </span>
-                    <span className="text">{socialButton.text}</span>
-                  </SocialButton>
-                ))}
-              </SocialButtonsContainer>
-              <DividerTextContainer>
-                <DividerText>Or Sign in with your e-mail</DividerText>
-              </DividerTextContainer>
-              <Form>
-                <Input type="email" placeholder="Email" />
-                <Input type="password" placeholder="Password" />
-                <SubmitButton type="submit">
-                  <SubmitButtonIcon className="icon" />
-                  <span className="text">{submitButtonText}</span>
-                </SubmitButton>
-              </Form>
-              <p tw="mt-6 text-xs text-gray-600 text-center">
-                <a href={forgotPasswordUrl} tw="border-b border-gray-500 border-dotted">
-                  Forgot Password ?
-                </a>
-              </p>
-              <p tw="mt-8 text-sm text-gray-600 text-center">
-                Dont have an account?{" "}
-                <a href="/register" tw="border-b border-gray-500 border-dotted">
-                  Sign Up
-                </a>
-              </p>
-            </FormContainer>
-          </MainContent>
-        </MainContainer>
-        {/* Coluna do carrossel */}
-        <IllustrationContainer>
-          <RotatingIllustration />
-        </IllustrationContainer>
-      </Content>
-    </Container>
-  </AnimationRevealPage>
-);
+  return (
+    <AnimationRevealPage>
+      <Header />
+      <Container>
+        <Content>
+          <FormContainer>
+            <Title>Entrar</Title>
+            <Subtitle>Acesse sua conta para ver suas receitas</Subtitle>
+            <form onSubmit={handleSubmit}>
+              <Field>
+                <Label htmlFor="email">E-mail</Label>
+                <InputWrapper>
+                  <Icon>
+                    <Mail size={20} />
+                  </Icon>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Seu e-mail"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </InputWrapper>
+              </Field>
+              <Field>
+                <Label htmlFor="password">Senha</Label>
+                <InputWrapper>
+                  <Icon>
+                    <Lock size={20} />
+                  </Icon>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Sua senha"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </InputWrapper>
+              </Field>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Entrando..." : "Entrar"}
+              </Button>
+            </form>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+            <LinkText href="/register">Não tem uma conta? Cadastre-se</LinkText>
+          </FormContainer>
+        </Content>
+      </Container>
+    </AnimationRevealPage>
+  );
+}

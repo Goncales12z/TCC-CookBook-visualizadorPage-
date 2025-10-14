@@ -1,4 +1,5 @@
 import React from "react";
+import React, { useState, useEffect } from "react";
 import tw from "twin.macro";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import Header from "components/headers/light.js";
@@ -17,6 +18,15 @@ const Button = tw.button`flex flex-col items-center justify-center w-full bg-blu
 export default function Perfil() {
   const { user } = useUser();
   const auth = getAuth();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Tenta carregar os dados do usuário do localStorage quando o componente montar
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      setUser(JSON.parse(loggedInUser));
+    }
+  }, []);
 
   const handleLogout = () => {
     signOut(auth)
@@ -27,6 +37,9 @@ export default function Perfil() {
       .catch((error) => {
         console.error("Erro ao deslogar:", error);
       });
+    // Remove os dados do usuário do localStorage e redireciona para o login
+    localStorage.removeItem("user");
+    window.location.href = "/login";
   };
 
   if (!user) {
@@ -62,6 +75,7 @@ export default function Perfil() {
         <Content>
           <FormContainer>
             <Title>Olá, {user.displayName}</Title>
+            <Title>Olá, {user.nome_usuario}</Title>
             <Subtitle>Gerencie seu perfil</Subtitle>
             <form>
               <Field>

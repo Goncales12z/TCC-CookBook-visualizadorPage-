@@ -76,7 +76,7 @@ export default function Perfil() {
               </Field>
               <Field>
                 <InputWrapper>
-                  <Link href="/configuracao">Configuração</Link>
+                  <Link href="/configuracao">Meus ingredientes</Link>
                 </InputWrapper>
               </Field>
               <Field>

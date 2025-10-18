@@ -87,7 +87,7 @@ export default () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ search: search })
+                    body: JSON.stringify({ search: search, userId: user.id_usuario }),
                 });
                 
                 const data = await response.json();

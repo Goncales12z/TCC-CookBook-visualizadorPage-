@@ -15,6 +15,17 @@ $raw_input = file_get_contents('php://input');
 
 $input = json_decode($raw_input, true);
 
+$userId = $input['userId'] ?? null;
+
+
+if (!$userId) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'ID do usuário é obrigatório.']);
+    exit;
+}
+
+
+
 if (!$input || !isset($input['search']) || empty(trim($input['search']))) {
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => 'Dados inválidos']);
@@ -37,7 +48,9 @@ try {
     $stmt = $pdo->prepare("SELECT nome_receita, descricao FROM receitas WHERE nome_receita LIKE ?");
     $stmt->execute(["%{$search}%"]); // Usando LIKE para uma busca mais flexível
     $receita_existente = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    $stmt1 = $pdo->prepare("SELECT ing.nome_ingredientes FROM ingredientes ing, usuario_ingredientes ui WHERE ing.id_ingredientes = ui.id_ingrediente AND ui.id_usuario = ?");
+    $stmt1->execute([$userId]);
+    $ingrediente_existente = $stmt1->fetchAll(PDO::FETCH_COLUMN);
     if ($receita_existente) {
         // Se encontrou, retorna a receita do banco e finaliza o script
         echo json_encode([

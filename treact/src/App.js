@@ -101,6 +101,7 @@ import PrivacyPolicyPage from "pages/PrivacyPolicy.js";
 import Login from "./pages/Login"; 
 import Perfil from "./pages/Perfil"; 
 import Configuracao from "./pages/Configuracao"; 
+import Geladeira from "./pages/Geladeira";
 
 
 import ComponentRenderer from "ComponentRenderer.js";
@@ -134,6 +135,7 @@ export default function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/aboutus" element={<AboutUsPage />} />
           <Route path="/configuracao" element={<Configuracao />} />
+          <Route path="/geladeira" element={<Geladeira />} />
           <Route
             path="/terms-of-service"
             element={<TermsOfServicePage />}

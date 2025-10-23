@@ -128,6 +128,7 @@ export default () => {
       <TabGrid
         heading={<>O que você quer fazer de {getPeriodo()}</>}
         tabs={tabsData}
+        recipeResult={recipeResult}
       />
     </AnimationRevealPage>
   );

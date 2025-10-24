@@ -11,17 +11,24 @@ import { ReactComponent as StarIcon } from "images/star-icon.svg";
 import { ReactComponent as SvgDecoratorBlob1 } from "images/svg-decorator-blob-5.svg";
 import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-7.svg";
 
-const HeaderRow = tw.div`flex justify-between items-center xl:flex-row`;
+const HeaderRow = tw.div`flex justify-center items-center flex-col`;
 const Header = tw(SectionHeading)``;
-const TabsControl = tw.div`flex flex-wrap bg-gray-200 px-2 py-2 rounded leading-none mt-12 xl:mt-0`;
+const TabsControl = styled.div`
+  ${tw`flex flex-wrap justify-center px-2 py-2 rounded leading-none mt-8`}
+  /* Esconde a barra de rolagem */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
 const TabControl = styled.div`
-  ${tw`cursor-pointer px-6 py-3 mt-2 sm:mt-0 sm:mr-2 last:mr-0 text-gray-600 font-medium rounded-sm transition duration-300 text-sm sm:text-base w-1/2 sm:w-auto text-center`}
+  ${tw`cursor-pointer px-6 py-3 m-2 rounded-full font-medium transition duration-300 text-sm sm:text-base text-center bg-gray-200 text-gray-700 hover:bg-gray-300`}
   &:hover {
-    ${tw`bg-gray-300 text-gray-700`}
+    ${tw`shadow-md`}
   }
-  ${props => props.active && tw`bg-primary-500! text-gray-100!`}
-  }
+  ${props => props.active && tw`bg-primary-500! text-gray-100! shadow-lg!`}
 `;
 
 const TabContent = tw(motion.div)`mt-6 flex flex-wrap sm:-mr-10 md:-mr-6 lg:-mr-12`;
@@ -210,14 +217,14 @@ export default ({
       <ContentWithPaddingXl>
         <HeaderRow>
           <Header>{heading}</Header>
-          <TabsControl>
-            {Object.keys(updatedTabs).map((tabName, index) => (
-              <TabControl key={index} active={activeTab === tabName} onClick={() => setActiveTab(tabName)}>
-                {tabName}
-              </TabControl>
-            ))}
-          </TabsControl>
         </HeaderRow>
+        <TabsControl>
+          {Object.keys(updatedTabs).map((tabName, index) => (
+            <TabControl key={index} active={activeTab === tabName} onClick={() => setActiveTab(tabName)}>
+              {tabName}
+            </TabControl>
+          ))}
+        </TabsControl>
         {tabsKeys.map((tabKey, index) => (
           <TabContent
             key={index}
@@ -239,7 +246,7 @@ export default ({
           >
             {tabs[tabKey].map((card, index) => (
               <CardContainer key={index}>
-                <Card className="group" to={`/receita/${card.slug}`} initial="rest" whileHover="hover" animate="rest">
+                <Card className="group" to={`/receita/${card.id}`} initial="rest" whileHover="hover" animate="rest">
         
                   <CardImageContainer imageSrc={card.imageSrc}>
 

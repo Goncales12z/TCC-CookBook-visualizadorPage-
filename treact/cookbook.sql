@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 14/10/2025 às 04:49
+-- Tempo de geração: 24/10/2025 às 03:42
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -80,7 +80,11 @@ INSERT INTO `ingredientes` (`id_ingredientes`, `nome_ingredientes`, `tipo`) VALU
 (40, 'Limão', NULL),
 (41, 'Vinagre', NULL),
 (42, 'Leite', NULL),
-(43, 'Creme de Leite', NULL);
+(43, 'Creme de Leite', NULL),
+(44, 'Leite Condensado', NULL),
+(46, 'Fermento em Pó', NULL),
+(47, 'Polvilho Azedo', NULL),
+(48, 'Champignon', NULL);
 
 -- --------------------------------------------------------
 
@@ -92,8 +96,24 @@ CREATE TABLE `receitas` (
   `id_receita` int(10) NOT NULL,
   `nome_receita` varchar(50) NOT NULL,
   `descricao` longtext NOT NULL,
-  `id_usuario` int(10) DEFAULT NULL
+  `id_usuario` int(10) DEFAULT NULL,
+  `categoria` varchar(50) NOT NULL,
+  `imagem_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `receitas`
+--
+
+INSERT INTO `receitas` (`id_receita`, `nome_receita`, `descricao`, `id_usuario`, `categoria`, `imagem_url`) VALUES
+(1, 'Bolo de Cenoura', 'Um bolo de cenoura clássico, fofinho e com uma deliciosa cobertura de chocolate.', NULL, 'Doces', 'https://images.tcdn.com.br/img/img_prod/691338/bolo_de_cenoura_com_cobertura_de_brigadeiro_413_1_3b73b645684628a4d29912a34088563a.jpg'),
+(2, 'Frango Xadrez', 'Uma receita oriental clássica que combina pedaços de frango com pimentões coloridos e um molho agridoce.', NULL, 'Salgados', 'https://www.sabornamesa.com.br/media/k2/items/cache/a94064e54f350d35565f42b33924a549_XL.jpg'),
+(3, 'Pudim de Leite Condensado', 'Uma sobremesa cremosa e irresistível, perfeita para qualquer ocasião. Feito no forno em banho-maria.', NULL, 'Doces', 'https://static.itdg.com.br/images/1200-630/a8e03615c033331969725b6f7034995f/322193-original.jpg'),
+(4, 'Lasanha à Bolonhesa', 'Camadas de massa, molho à bolonhesa suculento e queijo derretido. Um prato que agrada a toda a família.', NULL, 'Salgados', 'https://static.itdg.com.br/images/1200-630/c8c5433884860933334270f881331345/324290-original.jpg'),
+(5, 'Panquecas Americanas', 'Panquecas fofinhas e deliciosas, perfeitas para um café da manhã especial. Sirva com mel, frutas ou manteiga.', NULL, 'Café da manhã', 'https://assets.delirec.com/images%2Fvdpjbv1b%2Fproduction%2F4c2f75896a52c882a2f253339a03765a135337f7-1000x1500.jpg'),
+(6, 'Strogonoff de Frango', 'Um clássico cremoso e rápido, perfeito para o almoço do dia a dia. Sirva com arroz branco e batata palha.', NULL, 'Almoço', 'https://www.unileverfoodsolutions.com.br/dam/global-ufs/mcos/SLA/calcmenu/recipes/BR-recipes/chicken-&-other-poultry-dishes/strogonoff-de-frango/main-header.jpg'),
+(7, 'Pão de Queijo de Liquidificador', 'Uma versão super fácil e rápida do pão de queijo, ideal para um lanche da tarde delicioso.', NULL, 'Lanche da tarde', 'https://static.itdg.com.br/images/1200-630/b0f0b543555a97490193399433f68333/319675-original.jpg'),
+(8, 'Sopa de Legumes Confortante', 'Uma sopa nutritiva e quentinha, perfeita para um jantar leve e reconfortante.', NULL, 'Jantar', 'https://www.mundoboaforma.com.br/wp-content/uploads/2021/05/sopa-de-legumes-com-carne.jpg');
 
 -- --------------------------------------------------------
 
@@ -129,16 +149,6 @@ CREATE TABLE `usuario_ingredientes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `usuario_ingredientes`
---
-
-INSERT INTO `usuario_ingredientes` (`id_usuario`, `id_ingrediente`) VALUES
-(1, 14),
-(1, 20),
-(1, 32),
-(1, 39);
-
---
 -- Índices para tabelas despejadas
 --
 
@@ -154,7 +164,8 @@ ALTER TABLE `ingredientes`
 --
 ALTER TABLE `receitas`
   ADD PRIMARY KEY (`id_receita`),
-  ADD KEY `id_usuario` (`id_usuario`);
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `categoria` (`categoria`);
 
 --
 -- Índices de tabela `usuario`
@@ -178,13 +189,13 @@ ALTER TABLE `usuario_ingredientes`
 -- AUTO_INCREMENT de tabela `ingredientes`
 --
 ALTER TABLE `ingredientes`
-  MODIFY `id_ingredientes` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_ingredientes` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de tabela `receitas`
 --
 ALTER TABLE `receitas`
-  MODIFY `id_receita` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_receita` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `usuario`

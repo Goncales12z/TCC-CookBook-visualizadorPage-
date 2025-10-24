@@ -126,7 +126,7 @@ export default function App() {
             path="/components/:type/:name"
             element={<ComponentRenderer />}
           />
-          <Route path="/receita/:slug" element={<RecipeDetailsPage />} />
+          <Route path="/receita/:id" element={<RecipeDetailsPage />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/" element={<RestaurantLandingPage />} />
           <Route path="/perfil" element={<Perfil />} />

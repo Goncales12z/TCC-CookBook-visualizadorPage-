@@ -73,7 +73,7 @@ try {
 }
 // Configurações do Ollama
 $ollamaUrl = 'http://localhost:11434/api/generate';
-$model = 'llama3.2';
+$model = 'llama3.2'; // IMPORTANTE: Este nome deve ser EXATAMENTE igual ao que aparece no comando 'ollama list'
 
 
 // Teste se o Ollama está rodando
@@ -92,12 +92,18 @@ if ($test_error) {
     exit;
 }
 
-// Criar o prompt
-//$elementsString = implode(', ', $search);
-$prompt = "Faça uma receita de {$search}. Explique o passo a passo de forma clara e educativa em português.";
+// --- CRIAÇÃO DO PROMPT PARA A IA ---
+// Transforma a lista de ingredientes do usuário em uma string
+$ingredientesDisponiveis = implode(', ', $ingrediente_existente);
 
+if (!empty($ingredientesDisponiveis)) {
+    // Prompt aprimorado pedindo uma estrutura específica
+    $prompt = "Crie uma receita para '{$search}' usando principalmente estes ingredientes que eu tenho: {$ingredientesDisponiveis}. Formate a resposta EXATAMENTE assim:\n\n[DESCRIÇÃO]\nUma breve descrição do prato.\n\n[INGREDIENTES]\n- Ingrediente 1 (quantidade)\n- Ingrediente 2 (quantidade)\n\n[MODO DE PREPARO]\n1. Primeiro passo.\n2. Segundo passo.";
+} else {
+    // Prompt padrão aprimorado
+    $prompt = "Crie uma receita para '{$search}'. Formate a resposta EXATAMENTE assim:\n\n[DESCRIÇÃO]\nUma breve descrição do prato.\n\n[INGREDIENTES]\n- Ingrediente 1 (quantidade)\n- Ingrediente 2 (quantidade)\n\n[MODO DE PREPARO]\n1. Primeiro passo.\n2. Segundo passo.";
+}
 
-// Parâmetros do Ollama, vocês não vão precisar mudar nada aqui. É uma forma de "calibrar" como o modelo responde
 $data = [
     'model' => $model,
     'prompt' => $prompt,
@@ -109,7 +115,6 @@ $data = [
 ];
 
 
-// Curl = command url, é como se o script php estivesse chamando diretamente o modelo que está rodando na nossa máquina. Ao invés de nós mandarmos o prompt, o script php que vai
 $ch = curl_init($ollamaUrl);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -117,10 +122,10 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
 ]);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 300);        // 3 minutos total
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);  // 30s para conectar
-curl_setopt($ch, CURLOPT_LOW_SPEED_LIMIT, 10);  // Abortar se a velocidade for menor que 10 bytes/segundo
-curl_setopt($ch, CURLOPT_LOW_SPEED_TIME, 60);   // ... por um período de 60 segundos.
+curl_setopt($ch, CURLOPT_TIMEOUT, 300);        // Timeout total de 5 minutos.
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);  // 30s para conectar.
+// As linhas abaixo foram removidas para evitar o erro de "operação muito lenta".
+// A configuração de limite de velocidade foi removida para permitir que a IA processe sem interrupção.
 
 
 // Executar requisição
@@ -180,10 +185,41 @@ $receita = $responseData['response'];
 // --- INTEGRAÇÃO COM BANCO DE DADOS (ESCRITA) ---
 // 2. Salvar a nova receita gerada pela IA no banco de dados
 try {
-    $stmt = $pdo->prepare("INSERT INTO receitas (nome_receita, descricao) VALUES (?, ?)");
-    // Salva o nome da busca, os ingredientes (em JSON) e as instruções
-    $stmt->execute([$search, $receita]);
+    $pdo->beginTransaction();
+
+    // Extrai as seções da resposta da IA
+    preg_match('/\[DESCRIÇÃO\](.*?)\[INGREDIENTES\]/s', $receita, $descMatches);
+    $descricaoPrato = isset($descMatches[1]) ? trim($descMatches[1]) : 'Descrição não gerada.';
+
+    preg_match('/\[INGREDIENTES\](.*?)\[MODO DE PREPARO\]/s', $receita, $ingMatches);
+    $ingredientesTexto = isset($ingMatches[1]) ? trim($ingMatches[1]) : '';
+
+    preg_match('/\[MODO DE PREPARO\](.*)/s', $receita, $prepMatches);
+    $preparoTexto = isset($prepMatches[1]) ? trim($prepMatches[1]) : '';
+
+    // Insere a receita principal e obtém o ID
+    $stmt = $pdo->prepare("INSERT INTO receitas (nome_receita, descricao, categoria, id_usuario) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$search, $descricaoPrato, 'Gerada por IA', $userId]);
+    $id_nova_receita = $pdo->lastInsertId();
+
+    // Processa e insere os passos do modo de preparo
+    if (!empty($preparoTexto)) {
+        $passos = preg_split('/^\d+\.\s*/m', $preparoTexto, -1, PREG_SPLIT_NO_EMPTY);
+        $stmt_passo = $pdo->prepare("INSERT INTO receita_passos (id_receita, ordem, descricao) VALUES (?, ?, ?)");
+        foreach ($passos as $ordem => $passo) {
+            if (!empty(trim($passo))) {
+                $stmt_passo->execute([$id_nova_receita, $ordem + 1, trim($passo)]);
+            }
+        }
+    }
+
+    // A lógica para salvar os ingredientes da IA seria mais complexa,
+    // pois exigiria encontrar os IDs de cada ingrediente no banco.
+    // Por enquanto, salvamos a descrição e os passos.
+
+    $pdo->commit();
 } catch (PDOException $e) {
+    $pdo->rollBack();
     // Não vamos parar o script se falhar ao salvar (ex: receita duplicada),
     // mas podemos logar o erro para depuração.
     error_log("Falha ao salvar receita no banco: " . $e->getMessage());

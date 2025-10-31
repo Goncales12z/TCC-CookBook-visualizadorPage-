@@ -7,13 +7,26 @@ require_once 'conexao.php';
 try {
     $pdo = conectarDB();
 
-    $stmt = $pdo->query("SELECT id_receita, nome_receita, descricao, categoria, imagem_url FROM receitas WHERE categoria IS NOT NULL AND categoria != '' ORDER BY categoria, nome_receita");
+    $stmt = $pdo->query("SELECT id_receita, nome_receita, descricao, categoria, imagem_url FROM receitas ORDER BY categoria, nome_receita");
 
     $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $receitasPorCategoria = [];
+    
+    // Adiciona uma categoria "Todos" que conterá todas as receitas
+    $receitasPorCategoria['Todos'] = [];
+    
     foreach ($receitas as $receita) {
-        $categoria = $receita['categoria'];
+        // Adiciona a receita à categoria "Todos"
+        $receitasPorCategoria['Todos'][] = [
+            'id' => $receita['id_receita'],
+            'title' => $receita['nome_receita'],
+            'content' => $receita['descricao'],
+            'imageSrc' => $receita['imagem_url'] ?: 'https://placehold.co/500x500?text=Recipe'
+        ];
+
+        // Se a receita tem uma categoria específica, adiciona também à sua categoria
+        $categoria = $receita['categoria'] ?: 'Outras';
         if (!isset($receitasPorCategoria[$categoria])) {
             $receitasPorCategoria[$categoria] = [];
         }
@@ -22,7 +35,7 @@ try {
             'id' => $receita['id_receita'],
             'title' => $receita['nome_receita'],
             'content' => $receita['descricao'],
-            'imageSrc' => $receita['imagem_url']
+            'imageSrc' => $receita['imagem_url'] ?: 'https://placehold.co/500x500?text=Recipe'
         ];
     }
 

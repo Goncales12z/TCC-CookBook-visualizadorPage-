@@ -198,8 +198,8 @@ try {
     $preparoTexto = isset($prepMatches[1]) ? trim($prepMatches[1]) : '';
 
     // Insere a receita principal e obtém o ID
-    $stmt = $pdo->prepare("INSERT INTO receitas (nome_receita, descricao, categoria, id_usuario) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$search, $descricaoPrato, 'Gerada por IA', $userId]);
+    $stmt = $pdo->prepare("INSERT INTO receitas (nome_receita, descricao, categoria, id_usuario, imagem_url) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$search, $descricaoPrato, 'Gerada por IA', $userId, 'https://placehold.co/500x500?text=AI+Generated+Recipe']);
     $id_nova_receita = $pdo->lastInsertId();
 
     // Processa e insere os passos do modo de preparo

@@ -14,12 +14,16 @@ import { ReactComponent as SvgDecoratorBlob2 } from "images/svg-decorator-blob-7
 const HeaderRow = tw.div`flex justify-center items-center flex-col`;
 const Header = tw(SectionHeading)``;
 const TabsControl = styled.div`
-  ${tw`flex flex-wrap justify-center px-2 py-2 rounded leading-none mt-8`}
+  ${tw`flex flex-wrap justify-center px-2 py-2 rounded leading-none mt-8 overflow-x-auto`}
   /* Esconde a barra de rolagem */
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
   &::-webkit-scrollbar {
     display: none;
+  }
+  /* Garante que a categoria "Todos" apareça primeiro */
+  & > div:first-child {
+    order: -1;
   }
 `;
 

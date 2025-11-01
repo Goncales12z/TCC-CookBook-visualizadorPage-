@@ -48,17 +48,38 @@ try {
     $stmt = $pdo->prepare("SELECT nome_receita, descricao FROM receitas WHERE nome_receita LIKE ?");
     $stmt->execute(["%{$search}%"]); // Usando LIKE para uma busca mais flexível
     $receita_existente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $stmt = $pdo->prepare("SELECT ri.quantidade FROM receitas r, receita_ingredientes ri WHERE r.id_receita = ri.id_receita AND r.nome_receita LIKE ?");
+    $stmt->execute(["%{$search}%"]);
+    $ingredientes_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $pdo->prepare("SELECT rp.ordem, rp.descricao FROM receitas r, receita_passos rp WHERE r.id_receita = rp.id_receita AND r.nome_receita LIKE ?");
+    $stmt->execute(["%{$search}%"]);
+    $passos_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     $stmt1 = $pdo->prepare("SELECT ing.nome_ingredientes FROM ingredientes ing, usuario_ingredientes ui WHERE ing.id_ingredientes = ui.id_ingrediente AND ui.id_usuario = ?");
     $stmt1->execute([$userId]);
     $ingrediente_existente = $stmt1->fetchAll(PDO::FETCH_COLUMN);
+    // Formatar ingredientes
+$ingredientes_formatados = array_map(function($ing) {
+    return "• " . $ing['quantidade'];
+}, $ingredientes_receita);
+$ingredientes_texto = implode("\n", $ingredientes_formatados);
+
+// Formatar passos
+$passos_formatados = array_map(function($passo) {
+    return $passo['ordem'] . ". " . $passo['descricao'];
+}, $passos_receita);
+$passos_texto = implode("\n", $passos_formatados);
     if ($receita_existente) {
         // Se encontrou, retorna a receita do banco e finaliza o script
         echo json_encode([
-            'success' => true,
-            'receita' => trim($receita_existente['descricao']),
-            'elements_used' => $receita_existente['nome_receita'], // Retorna o nome exato do prato do BD
-            'source' => 'database' // Informa que a fonte foi o banco de dados
-        ]);
+    'success' => true,
+    'receita' => trim($receita_existente['descricao']),
+    'ingredientes' => $ingredientes_texto,  // String formatada
+    'passos' => $passos_texto,              // String formatada
+    'elements_used' => $receita_existente['nome_receita'],
+    'source' => 'database'
+]);
         exit;
     }
 } catch (PDOException $e) {
@@ -98,10 +119,10 @@ $ingredientesDisponiveis = implode(', ', $ingrediente_existente);
 
 if (!empty($ingredientesDisponiveis)) {
     // Prompt aprimorado pedindo uma estrutura específica
-    $prompt = "Crie uma receita para '{$search}' usando principalmente estes ingredientes que eu tenho: {$ingredientesDisponiveis}. Formate a resposta EXATAMENTE assim:\n\n[DESCRIÇÃO]\nUma breve descrição do prato.\n\n[INGREDIENTES]\n- Ingrediente 1 (quantidade)\n- Ingrediente 2 (quantidade)\n\n[MODO DE PREPARO]\n1. Primeiro passo.\n2. Segundo passo.";
+    $prompt = "Crie uma receita para '{$search}' usando principalmente estes ingredientes que eu tenho: {$ingredientesDisponiveis}. Formate a resposta EXATAMENTE assim:\n\n[DESCRIÇÃO]\nUma breve descrição do prato.\n\n[INGREDIENTES]\n- Ingrediente 1 (quantidade)\n- Ingrediente 2 (quantidade)\n\n[MODO DE PREPARO]\n1. Primeiro passo.\n2. Segundo passo.\n\n[CATEGORIA]\nCategoria do prato como 'Doces', 'Salgados'.";
 } else {
     // Prompt padrão aprimorado
-    $prompt = "Crie uma receita para '{$search}'. Formate a resposta EXATAMENTE assim:\n\n[DESCRIÇÃO]\nUma breve descrição do prato.\n\n[INGREDIENTES]\n- Ingrediente 1 (quantidade)\n- Ingrediente 2 (quantidade)\n\n[MODO DE PREPARO]\n1. Primeiro passo.\n2. Segundo passo.";
+    $prompt = "Crie uma receita para '{$search}'. Formate a resposta EXATAMENTE assim:\n\n[DESCRIÇÃO]\nUma breve descrição do prato.\n\n[INGREDIENTES]\n- Ingrediente 1 (quantidade)\n- Ingrediente 2 (quantidade)\n\n[MODO DE PREPARO]\n1. Primeiro passo.\n2. Segundo passo.\n\n[CATEGORIA]\nCategoria do prato como 'Doces', 'Salgados'.";
 }
 
 $data = [
@@ -109,7 +130,7 @@ $data = [
     'prompt' => $prompt,
     'stream' => false,
     'options' => [
-        'temperature' => 0.7,
+        'temperature' => 0.1,
         'max_tokens' => 500
     ]
 ];
@@ -194,12 +215,15 @@ try {
     preg_match('/\[INGREDIENTES\](.*?)\[MODO DE PREPARO\]/s', $receita, $ingMatches);
     $ingredientesTexto = isset($ingMatches[1]) ? trim($ingMatches[1]) : '';
 
-    preg_match('/\[MODO DE PREPARO\](.*)/s', $receita, $prepMatches);
+    preg_match('/\[MODO DE PREPARO\](.*?)\[CATEGORIA\]/s', $receita, $prepMatches);
     $preparoTexto = isset($prepMatches[1]) ? trim($prepMatches[1]) : '';
+
+    preg_match('/\[CATEGORIA\](.*)/s', $receita, $catMatches);
+    $categoriaPrato = isset($catMatches[1]) ? trim($catMatches[1]) : '';
 
     // Insere a receita principal e obtém o ID
     $stmt = $pdo->prepare("INSERT INTO receitas (nome_receita, descricao, categoria, id_usuario, imagem_url) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$search, $descricaoPrato, 'Gerada por IA', $userId, 'https://placehold.co/500x500?text=AI+Generated+Recipe']);
+    $stmt->execute([$search, $descricaoPrato, $categoriaPrato, $userId, 'https://placehold.co/500x500?text=AI+Generated+Recipe']);
     $id_nova_receita = $pdo->lastInsertId();
 
     // Processa e insere os passos do modo de preparo

@@ -11,6 +11,16 @@ try {
 
     $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    $stmt = $pdo->prepare("SELECT ri.id_receita, ri.quantidade FROM receitas r, receita_ingredientes ri WHERE r.id_receita = ri.id_receita");
+    $stmt->execute();
+    $ingredientes_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // $stmt = $pdo->prepare("SELECT rp.ordem, rp.descricao FROM receitas r, receita_passos rp WHERE r.id_receita = rp.id_receita AND r.nome_receita LIKE ?");
+    // $stmt->execute(["%{$search}%"]);
+    // $passos_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    
+
     $receitasPorCategoria = [];
     
     // Adiciona uma categoria "Todos" que conterá todas as receitas
@@ -22,8 +32,16 @@ try {
             'id' => $receita['id_receita'],
             'title' => $receita['nome_receita'],
             'content' => $receita['descricao'],
-            'imageSrc' => $receita['imagem_url'] ?: 'https://placehold.co/500x500?text=Recipe'
+            'imageSrc' => $receita['imagem_url'] ?: 'https://placehold.co/500x500?text=Recipe',
+            'ingredients' => [],  
+            'preparation' => []
         ];
+
+        // Aqui to add a receita na categoria todos 
+        if (!isset($receitasPorCategoria['Todos'])) {
+            $receitasPorCategoria['Todos'] = [];
+        }
+        $receitasPorCategoria['Todos'][] = $receitaFormatada;
 
         // Se a receita tem uma categoria específica, adiciona também à sua categoria
         $categoria = $receita['categoria'] ?: 'Outras';

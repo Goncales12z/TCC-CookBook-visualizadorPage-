@@ -23,16 +23,16 @@ try {
             r.nome_receita, 
             r.descricao, 
             r.imagem_url,
-            (SELECT COUNT(*) FROM receita_ingredientes ri WHERE ri.id_receita = r.id_receita) as total_ingredientes,
+            (SELECT COUNT(*) FROM receita_ingredientes ri, receitas r WHERE ri.id_receita = r.id_receita) as total_ingredientes,
             (SELECT COUNT(*) 
-             FROM receita_ingredientes ri 
+             FROM receita_ingredientes ri, receitas r 
              WHERE ri.id_receita = r.id_receita 
              AND ri.id_ingrediente IN (SELECT ui.id_ingrediente FROM usuario_ingredientes ui WHERE ui.id_usuario = :userId)
             ) as ingredientes_em_comum
         FROM 
             receitas r
         WHERE 
-            r.categoria = :categoria
+            1
         ORDER BY 
             ingredientes_em_comum DESC, total_ingredientes ASC
         LIMIT 4;

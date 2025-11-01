@@ -139,7 +139,7 @@ export default () => {
 
           try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 segundos timeout
+            const timeoutId = setTimeout(() => controller.abort(), 1200000); // 120 segundos timeout
 
             const response = await fetch("http://localhost/TCC/php/processo.php", {
               method: "POST",
@@ -154,7 +154,7 @@ export default () => {
             const data = await response.json();
 
             if (data.success) {
-              setRecipeResult({ name: data.elements_used, instructions: data.receita, preparation: data.passos, qtde: data.ingredientes });
+              setRecipeResult({ name: data.elements_used, instructions: data.receita});
             } else {
               setError(data.error || "Erro ao processar solicitação.");
             }
@@ -187,13 +187,11 @@ export default () => {
         <ResultContainer>
           <ResultTitle>Receita para: {recipeResult.name}</ResultTitle>
           <ResultText>{recipeResult.instructions}</ResultText>
-          <ResultText>{recipeResult.preparation}</ResultText>
-          <ResultText>{recipeResult.qtde}</ResultText>
         </ResultContainer>
       )}
 
       {/* Seção de Recomendações */}
-      {/* {user && recommendations.length > 0 && (
+      {user && recommendations.length > 0 && (
         <RecommendationsContainer>
           <SectionHeading>Recomendações para seu {getPeriodo()}</SectionHeading>
           <RecommendationsGrid>
@@ -209,9 +207,8 @@ export default () => {
               </RecommendationCard>
             ))}
           </RecommendationsGrid>
-        </RecommendationsContainer> */}
-      
-
+        </RecommendationsContainer>
+      )}
       <TabGrid
         heading={<>O que vamos cozinhar hoje?</>}
         tabs={tabs} // Passa as receitas buscadas do banco de dados

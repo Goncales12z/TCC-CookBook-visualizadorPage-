@@ -15,6 +15,14 @@ try {
     $stmt->execute();
     $ingredientes_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    foreach ($receitas as &$receita) {
+        $receita['ingredients'] = [];
+        foreach ($ingredientes_receita as $ingrediente) {
+            if ($ingrediente['id_receita'] == $receita['id_receita']) {
+                $receita['ingredients'][] = $ingrediente['quantidade'];
+            }
+        }
+    }
     // $stmt = $pdo->prepare("SELECT rp.ordem, rp.descricao FROM receitas r, receita_passos rp WHERE r.id_receita = rp.id_receita AND r.nome_receita LIKE ?");
     // $stmt->execute(["%{$search}%"]);
     // $passos_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -33,7 +41,7 @@ try {
             'title' => $receita['nome_receita'],
             'content' => $receita['descricao'],
             'imageSrc' => $receita['imagem_url'] ?: 'https://placehold.co/500x500?text=Recipe',
-            'ingredients' => [],  
+            'ingredients' => $receita['ingredients'],  
             'preparation' => []
         ];
 

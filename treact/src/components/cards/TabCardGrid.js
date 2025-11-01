@@ -205,7 +205,7 @@ export default ({
           reviews: "IA",
           imageSrc: "https://placehold.co/500x500?text=Recipe",
           slug: "resultado-da-busca",
-          ingredients: [],
+          ingredients: recipeResult.qtde.split("\n"),
           preparation: recipeResult.instructions.split("\n"),
           url: "#",
         }

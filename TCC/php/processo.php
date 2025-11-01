@@ -1,4 +1,4 @@
-<?php 
+<?php
 header('Access-Control-Allow-Origin: http://localhost:3000'); // Porta do React
 require_once 'conexao.php'; // Inclui o arquivo de conexão com o banco de dados
 
@@ -52,34 +52,38 @@ try {
     $stmt = $pdo->prepare("SELECT ri.quantidade FROM receitas r, receita_ingredientes ri WHERE r.id_receita = ri.id_receita AND r.nome_receita LIKE ?");
     $stmt->execute(["%{$search}%"]);
     $ingredientes_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //$ingredientes_receita = array_column($ingredientes_receita, 'quantidade'); faz a msm coisa que o foreach
+    foreach ($ingredientes_receita as &$ingrediente) {
+        $ingrediente = $ingrediente['quantidade'];
+    }
+    $ingredientes = "";
+    for($i=0; $i < count($ingredientes_receita); $i++) {
+        $ingredientes = $ingredientes . $ingredientes_receita[$i] . "\n";
+    }
+
     $stmt = $pdo->prepare("SELECT rp.ordem, rp.descricao FROM receitas r, receita_passos rp WHERE r.id_receita = rp.id_receita AND r.nome_receita LIKE ?");
     $stmt->execute(["%{$search}%"]);
     $passos_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $passos = "";
+    for($i=0; $i < count($passos_receita); $i++) {
+        $passos = $passos . $passos_receita[$i]['ordem'] . ". " . $passos_receita[$i]['descricao'] . "\n";
+    }
 
     $stmt1 = $pdo->prepare("SELECT ing.nome_ingredientes FROM ingredientes ing, usuario_ingredientes ui WHERE ing.id_ingredientes = ui.id_ingrediente AND ui.id_usuario = ?");
     $stmt1->execute([$userId]);
     $ingrediente_existente = $stmt1->fetchAll(PDO::FETCH_COLUMN);
     // Formatar ingredientes
-$ingredientes_formatados = array_map(function($ing) {
-    return "• " . $ing['quantidade'];
-}, $ingredientes_receita);
-$ingredientes_texto = implode("\n", $ingredientes_formatados);
-
-// Formatar passos
-$passos_formatados = array_map(function($passo) {
-    return $passo['ordem'] . ". " . $passo['descricao'];
-}, $passos_receita);
-$passos_texto = implode("\n", $passos_formatados);
+    
     if ($receita_existente) {
         // Se encontrou, retorna a receita do banco e finaliza o script
         echo json_encode([
-    'success' => true,
-    'receita' => trim($receita_existente['descricao']),
-    'ingredientes' => $ingredientes_texto,  // String formatada
-    'passos' => $passos_texto,              // String formatada
-    'elements_used' => $receita_existente['nome_receita'],
-    'source' => 'database'
-]);
+            'success' => true,
+            'receita' => trim($receita_existente['descricao']) . $ingredientes . $passos,
+            'ingredientes' => $ingredientes_receita,
+            'passos' => $passos_receita,
+            'elements_used' => $receita_existente['nome_receita'],
+            'source' => 'database'
+        ]);
         exit;
     }
 } catch (PDOException $e) {
@@ -107,7 +111,7 @@ curl_close($test_ch);
 
 if ($test_error) {
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'error' => 'Ollama não está rodando ou não está acessível: ' . $test_error
     ]);
     exit;
@@ -130,7 +134,7 @@ $data = [
     'prompt' => $prompt,
     'stream' => false,
     'options' => [
-        'temperature' => 0.1,
+        'temperature' => 0.6,
         'max_tokens' => 500
     ]
 ];
@@ -161,7 +165,7 @@ curl_close($ch);
 if ($curlError) {
     http_response_code(500);
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'error' => 'Erro de conexão com o Ollama: ' . $curlError
     ]);
     exit;
@@ -171,7 +175,7 @@ if ($curlError) {
 if ($httpCode !== 200) {
     http_response_code(500);
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'error' => 'Ollama retornou erro HTTP: ' . $httpCode . '. Response: ' . $response
     ]);
     exit;
@@ -184,7 +188,7 @@ $responseData = json_decode($response, true);
 if (isset($responseData['error'])) {
     http_response_code(500);
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'error' => 'Erro do Ollama: ' . $responseData['error']
     ]);
     exit;
@@ -194,7 +198,7 @@ if (isset($responseData['error'])) {
 if (!isset($responseData['response']) || empty(trim($responseData['response']))) {
     http_response_code(500);
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'error' => 'A IA não gerou uma receita. Resposta recebida: ' . $response
     ]);
     exit;
@@ -257,5 +261,3 @@ $final_response = [
 ];
 
 echo json_encode($final_response);
-
-?>

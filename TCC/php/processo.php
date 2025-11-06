@@ -121,13 +121,27 @@ if ($test_error) {
 // Transforma a lista de ingredientes do usuário em uma string
 $ingredientesDisponiveis = implode(', ', $ingrediente_existente);
 
-if (!empty($ingredientesDisponiveis)) {
-    // Prompt aprimorado pedindo uma estrutura específica
-    $prompt = "Crie uma receita para '{$search}' usando principalmente estes ingredientes que eu tenho: {$ingredientesDisponiveis}. Formate a resposta EXATAMENTE assim:\n\n[DESCRIÇÃO]\nUma breve descrição do prato.\n\n[INGREDIENTES]\n- Ingrediente 1 (quantidade)\n- Ingrediente 2 (quantidade)\n\n[MODO DE PREPARO]\n1. Primeiro passo.\n2. Segundo passo.\n\n[CATEGORIA]\nCategoria do prato como 'Doces', 'Salgados'.";
-} else {
+
     // Prompt padrão aprimorado
-    $prompt = "Crie uma receita para '{$search}'. Formate a resposta EXATAMENTE assim:\n\n[DESCRIÇÃO]\nUma breve descrição do prato.\n\n[INGREDIENTES]\n- Ingrediente 1 (quantidade)\n- Ingrediente 2 (quantidade)\n\n[MODO DE PREPARO]\n1. Primeiro passo.\n2. Segundo passo.\n\n[CATEGORIA]\nCategoria do prato como 'Doces', 'Salgados'.";
-}
+    $prompt = "Crie uma receita para {$search}.
+A resposta deve seguir EXATAMENTE o formato abaixo, sem adicionar explicações extras, comentários ou emojis:
+
+[DESCRIÇÃO]  
+Uma breve descrição do prato, explicando seu sabor, textura e quando costuma ser servido.
+
+[INGREDIENTES]  
+- Ingrediente 1 (quantidade)  
+- Ingrediente 2 (quantidade)  
+- Ingrediente 3 (quantidade)  
+(adicione quantos ingredientes forem necessários)
+
+[MODO DE PREPARO]  
+1. Descreva o primeiro passo de forma clara e prática.  
+2. Continue listando os passos seguintes até o preparo estar completo.  
+(adicione quantos passos forem necessários)
+
+[CATEGORIA]  
+Escolha **uma** categoria entre: 'Doces', 'Salgados', 'Almoço', 'Jantar', 'Café da manhã', 'Lanche da tarde' ou 'Outros'.";
 
 $data = [
     'model' => $model,
@@ -215,6 +229,7 @@ try {
     // Extrai as seções da resposta da IA
     preg_match('/\[DESCRIÇÃO\](.*?)\[INGREDIENTES\]/s', $receita, $descMatches);
     $descricaoPrato = isset($descMatches[1]) ? trim($descMatches[1]) : 'Descrição não gerada.';
+    
 
     preg_match('/\[INGREDIENTES\](.*?)\[MODO DE PREPARO\]/s', $receita, $ingMatches);
     $ingredientesTexto = isset($ingMatches[1]) ? trim($ingMatches[1]) : '';

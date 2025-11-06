@@ -11,14 +11,14 @@ try {
 
     $receitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $pdo->prepare("SELECT ri.id_receita, ri.quantidade FROM receitas r, receita_ingredientes ri WHERE r.id_receita = ri.id_receita");
-    $stmt->execute();
-    $ingredientes_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt2 = $pdo->prepare("SELECT ri.id_receita, ri.quantidade FROM receitas r, receita_ingredientes ri WHERE r.id_receita = ri.id_receita");
+    $stmt2->execute();
+    $ingredientes_receita = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($receitas as &$receita) {
         $receita['ingredients'] = [];
         foreach ($ingredientes_receita as $ingrediente) {
-            if ($ingrediente['id_receita'] == $receita['id_receita']) {
+            if ($ingrediente['id_receita'] === $receita['id_receita']) {
                 $receita['ingredients'][] = $ingrediente['quantidade'];
             }
         }
@@ -46,10 +46,7 @@ try {
         ];
 
         // Aqui to add a receita na categoria todos 
-        if (!isset($receitasPorCategoria['Todos'])) {
-            $receitasPorCategoria['Todos'] = [];
-        }
-        $receitasPorCategoria['Todos'][] = $receitaFormatada;
+        // $receitasPorCategoria['Todos'][] = $receitaFormatada;
 
         // Se a receita tem uma categoria específica, adiciona também à sua categoria
         $categoria = $receita['categoria'] ?: 'Outras';

@@ -77,8 +77,10 @@ export default () => {
 
     // Busca as receitas por categoria para exibir nas abas
     const fetchRecipesForTabs = async () => {
+      if (!currentUser) return;
+
       try {
-        const response = await fetch("http://localhost/TCC/php/get_recipes.php");
+        const response = await fetch(`http://localhost/TCC/php/get_recipes.php?userId=${currentUser.id_usuario}`);
         const result = await response.json();
         if (result.success) {
           setTabs(result.data);
@@ -91,7 +93,7 @@ export default () => {
     };
 
     // Busca as recomendações para o usuário logado
-    const fetchRecommendations = async () => {
+    /*const fetchRecommendations = async () => {
       if (!currentUser) return; // Só busca se o usuário estiver logado
 
       const periodo = getPeriodo(true); // Pega o período como string
@@ -107,10 +109,10 @@ export default () => {
       } catch (error) {
         console.error("Erro de conexão ao buscar recomendações:", error);
       }
-    };
+    };*/
 
     fetchRecipesForTabs();
-    fetchRecommendations();
+    //fetchRecommendations();
   }, []);
 
   function getPeriodo(asString = false) {

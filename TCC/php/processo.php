@@ -230,7 +230,6 @@ try {
     preg_match('/\[DESCRIÇÃO\](.*?)\[INGREDIENTES\]/s', $receita, $descMatches);
     $descricaoPrato = isset($descMatches[1]) ? trim($descMatches[1]) : 'Descrição não gerada.';
     
-
     preg_match('/\[INGREDIENTES\](.*?)\[MODO DE PREPARO\]/s', $receita, $ingMatches);
     $ingredientesTexto = isset($ingMatches[1]) ? trim($ingMatches[1]) : '';
 
@@ -255,6 +254,27 @@ try {
             }
         }
     }
+
+    // if(!empty($ingredientesTexto)){
+    //     $ingredientes = trim(preg_split('/^-\s*/m', $ingredientesTexto, -1, PREG_SPLIT_NO_EMPTY));
+    //     $placeholders = str_repeat("?,", count($ingredientes) - 1) . "?";
+    //     $stmt_ingred = $pdo->prepare("SELECT i.id_ingredientes FROM ingredientes i WHERE i.nome_ingredientes IN ($placeholders)");
+    //     $stmt_ingred->execute([$ingredientes]);
+    //     $qtde_ingred = $stmt_ingred->fetchAll(PDO::FETCH_NUM);
+    //     if(count($qtde_ingred) == count($ingredientes)){
+    //         $i = 0;
+    //         $stmt_ingred = $pdo->prepare("INSERT INTO receita_ingredientes (id_receita, id_ingredientes, quantidade) VALUES (?, ?, ?)");
+    //         foreach ($ingredientes as $ingrediente) {
+    //         if (!empty($ingrediente)) {
+    //             $stmt_passo->execute([$id_nova_receita, $qtde_ingred[$i], $ingrediente]);
+    //             $i++;
+    //         }
+    //     }
+    //     }
+    //     else{
+    //         foreach($ingredientes as $ingrediente);
+    //     }
+    // }
 
     // A lógica para salvar os ingredientes da IA seria mais complexa,
     // pois exigiria encontrar os IDs de cada ingrediente no banco.

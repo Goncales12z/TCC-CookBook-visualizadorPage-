@@ -19,6 +19,8 @@ const Message = tw.p`text-center mt-4`;
 const ErrorMessage = tw(Message)`text-red-500`;
 const SuccessMessage = tw(Message)`text-green-500`;
 
+export const Link = tw.a`px-8 py-3 bg-primary-500 text-white font-bold rounded-lg hover:bg-primary-700 transition disabled:bg-gray-400`;
+
 export default () => {
     const [user, setUser] = useState(null);
   const [ingredients, setIngredients] = useState({});
@@ -149,6 +151,10 @@ export default () => {
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
           />
+
+          <ButtonContainer>
+          <Link href="/addingredients">Adicionar Ingredientes</Link>
+          </ButtonContainer>
 
           {Object.keys(filteredIngredients).length > 0 ? (
             Object.entries(filteredIngredients).map(([group, items]) => (

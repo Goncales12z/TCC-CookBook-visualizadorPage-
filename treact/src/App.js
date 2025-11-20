@@ -101,6 +101,7 @@ import PrivacyPolicyPage from "pages/PrivacyPolicy.js";
 import Login from "./pages/Login"; 
 import Perfil from "./pages/Perfil"; 
 import Configuracao from "./pages/Configuracao"; 
+import Addingredients from "./pages/Addingredients.js";
 
 
 import ComponentRenderer from "ComponentRenderer.js";
@@ -145,6 +146,7 @@ export default function App() {
             element={<ComponentRenderer />}
           />
           <Route path="/components/:name" element={<ComponentRenderer />} />
+          <Route path="/addingredients" element={<Addingredients />} />
         </Routes>
       </Router>
     </>

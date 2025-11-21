@@ -66,6 +66,20 @@ export default () => {
   const [tabs, setTabs] = useState({}); // Novo estado para as abas de receitas
   const [recommendations, setRecommendations] = useState([]); // Novo estado para as recomendações
 
+    const fetchRecipesForTabs = async (currentUser) => {
+    try {
+      const response = await fetch(`http://localhost/TCC/php/get_recipes.php?userId=${currentUser.id_usuario}`);
+      const result = await response.json();
+      if (result.success) {
+        setTabs(result.data);
+          } else {
+            console.error("Erro ao buscar receitas para as abas:", result.error);
+          }
+          } catch (error) {
+            console.error("Erro de conexão ao buscar receitas para as abas:", error);
+          }
+    };
+
   useEffect(() => {
     // Verifica se há um usuário logado no localStorage quando a página carrega
     const loggedInUser = localStorage.getItem("user");
@@ -73,10 +87,12 @@ export default () => {
     if (loggedInUser) {
       currentUser = JSON.parse(loggedInUser);
       setUser(currentUser);
+      fetchRecipesForTabs(currentUser);
+
     }
 
     // Busca as receitas por categoria para exibir nas abas
-    const fetchRecipesForTabs = async () => {
+    /*const fetchRecipesForTabs = async () => {
       if (!currentUser) return;
 
       try {
@@ -90,7 +106,7 @@ export default () => {
       } catch (error) {
         console.error("Erro de conexão ao buscar receitas para as abas:", error);
       }
-    };
+    };*/
 
     // Busca as recomendações para o usuário logado
     /*const fetchRecommendations = async () => {
@@ -157,6 +173,7 @@ export default () => {
 
             if (data.success) {
               setRecipeResult({ name: data.elements_used, instructions: data.receita});
+              fetchRecipesForTabs(user);
             } else {
               setError(data.error || "Erro ao processar solicitação.");
             }

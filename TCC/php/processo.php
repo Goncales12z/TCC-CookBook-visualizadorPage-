@@ -159,7 +159,7 @@ $data = [
     ]
 ];
 
-/* para falar com o modelo
+//para falar com o modelo
 $ch = curl_init($ollamaUrl);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -226,9 +226,9 @@ if (!isset($responseData['response']) || empty(trim($responseData['response'])))
 
 // Extrair a composição gerada
 $receita = $responseData['response'];
-*/
 
-$receita = "[DESCRIÇÃO]
+
+/*$receita = "[DESCRIÇÃO]
 Risotto de abobora é um prato cremoso e saboroso, feito com a abobora como ingrediente principal. O risoto tem uma textura suave e leve, com sabores doce e levemente amargo da abobora. É típico de refeições à noite.
 
 [INGREDIENTES]
@@ -261,7 +261,7 @@ Risotto de abobora é um prato cremoso e saboroso, feito com a abobora como ingr
 6. Tempere com sal e pimenta a gosto.
 
 [CATEGORIA]
-Jantar";
+Jantar";*/
 
 // --- INTEGRAÇÃO COM BANCO DE DADOS (ESCRITA) ---
 // 2. Salvar a nova receita gerada pela IA no banco de dados
@@ -366,7 +366,7 @@ $final_response = [
     'elements_used' => $search,
     'ingredientes' => $ingredientes,
     'quantidades' => $quantidades,
-    'ingredientesTexto' => var_dump($ingredientesTexto)
+    'ingredientesTexto' => $ingredientesTexto
 ];
 
 echo json_encode($final_response);

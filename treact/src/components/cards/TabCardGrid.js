@@ -37,6 +37,7 @@ const TabControl = styled.div`
 
 const TabContent = tw(motion.div)`mt-6 flex flex-wrap sm:-mr-10 md:-mr-6 lg:-mr-12`;
 const CardContainer = tw.div`mt-10 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 sm:pr-10 md:pr-6 lg:pr-12`;
+const ContainerCard = tw.div`bg-gray-300 flex flex-col items-center p-1 rounded-lg h-full shadow hover:shadow-xl transition-shadow duration-700`;
 const Card = styled(motion(Link))`bg-gray-200 rounded-b block max-w-xs mx-auto sm:max-w-none sm:mx-0`;
 const CardImageContainer = styled.div`
   ${props => css`background-image: url("${props.imageSrc}");`}
@@ -60,7 +61,13 @@ const CardReview = tw.div`font-medium text-xs text-gray-600`;
 
 const CardText = tw.div`p-4 text-gray-900`;
 const CardTitle = tw.h5`text-lg font-semibold group-hover:text-primary-500`;
-const CardContent = tw.p`mt-1 text-sm font-medium text-gray-600`;
+const CardContent = styled.p`
+  ${tw`mt-1 text-sm font-medium text-gray-600`}
+  display: -webkit-box;
+  -webkit-line-clamp: 3;       /* número de linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
 const CardPrice = tw.p`mt-4 text-xl font-bold`;
 
 const DecoratorBlob1 = styled(SvgDecoratorBlob1)`
@@ -74,8 +81,6 @@ const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
 const getRandomCards = () => {
   const cards = [
     {
-      imageSrc:
-        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
       title: "Chicken Chilled",
       content: "Chicken Main Course",
       price: "$5.99",
@@ -84,8 +89,6 @@ const getRandomCards = () => {
       url: "#"
     },
     {
-      imageSrc:
-        "https://images.unsplash.com/photo-1582254465498-6bc70419b607?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
       title: "Samsa Beef",
       content: "Fried Mexican Beef",
       price: "$3.99",
@@ -94,8 +97,6 @@ const getRandomCards = () => {
       url: "#"
     },
     {
-      imageSrc:
-        "https://images.unsplash.com/photo-1565310022184-f23a884f29da?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
       title: "Carnet Nachos",
       content: "Chilli Crispy Nachos",
       price: "$3.99",
@@ -104,8 +105,6 @@ const getRandomCards = () => {
       url: "#"
     },
     {
-      imageSrc:
-        "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
       title: "Guacamole Mex",
       content: "Mexican Chilli",
       price: "$3.99",
@@ -114,8 +113,6 @@ const getRandomCards = () => {
       url: "#"
     },
     {
-      imageSrc:
-        "https://images.unsplash.com/photo-1550461716-dbf266b2a8a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
       title: "Chillie Cake",
       content: "Deepfried Chicken",
       price: "$2.99",
@@ -124,8 +121,6 @@ const getRandomCards = () => {
       url: "#"
     },
     {
-      imageSrc:
-        "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327??ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
       title: "Nelli",
       content: "Hamburger & Fries",
       price: "$7.99",
@@ -134,8 +129,6 @@ const getRandomCards = () => {
       url: "#"
     },
     {
-      imageSrc:
-        "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
       title: "Jalapeno Poppers",
       content: "Crispy Soyabeans",
       price: "$8.99",
@@ -144,8 +137,6 @@ const getRandomCards = () => {
       url: "#"
     },
     {
-      imageSrc:
-        "https://images.unsplash.com/photo-1473093226795-af9932fe5856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
       title: "Cajun Chicken",
       content: "Roasted Chicken & Egg",
       price: "$7.99",
@@ -162,7 +153,6 @@ const getRandomCards = () => {
 export let tabsData = {
   1: [
     {
-      imageSrc: "https://placehold.co/500x500/EFEFEF/AAAAAA&text=Recipe",
       title: "",
       content: "",
       price: "",
@@ -203,7 +193,6 @@ export default ({
           price: "—",
           rating: "5.0",
           reviews: "IA",
-          imageSrc: "https://placehold.co/500x500?text=Recipe",
           slug: "resultado-da-busca",
           ingredients: recipeResult.instructions.split("\n"),
           preparation: recipeResult.instructions.split("\n"),
@@ -250,43 +239,18 @@ export default ({
           >
             {tabs[tabKey].map((card, index) => (
               <CardContainer key={index}>
+                <ContainerCard>
                 <Card className="group" to={`/receita/${card.id}`} initial="rest" whileHover="hover" animate="rest">
         
-                  <CardImageContainer imageSrc={card.imageSrc}>
 
-                    <CardRatingContainer>
-
-                      <CardRating>
-
-                        <StarIcon />
-                        {card.rating}
-                      </CardRating>
-                      <CardReview>({card.reviews})</CardReview>
-                    </CardRatingContainer>
-                    <CardHoverOverlay
-                      variants={{
-                        hover: {
-                          opacity: 1,
-                          height: "auto"
-                        },
-                        rest: {
-                          opacity: 0,
-                          height: 0
-                        }
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-
-                      <CardButton>Ver Receita</CardButton>
-                    </CardHoverOverlay>
-                  </CardImageContainer>
                   <CardText>
-    
                     <CardTitle>{card.title}</CardTitle>
                     <CardContent>{card.content}</CardContent>
                     <CardPrice>{card.price}</CardPrice>
                   </CardText>
+
                 </Card>
+                </ContainerCard>
               </CardContainer>
             ))}
           </TabContent>

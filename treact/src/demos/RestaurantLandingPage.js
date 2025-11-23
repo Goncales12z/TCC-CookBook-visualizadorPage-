@@ -140,33 +140,49 @@ export default () => {
           setIsLoading(true);
 
           try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 1200000); // 120 segundos timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 120000000); // 120 segundos timeout
 
-            const response = await fetch("http://localhost/TCC/php/processo.php", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ search: search, userId: user.id_usuario }),
-              signal: controller.signal,
-            });
+  const response = await fetch("http://localhost/TCC/php/processo.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ search: search, userId: user.id_usuario }),
+    signal: controller.signal,
+  });
 
-            clearTimeout(timeoutId);
-            const data = await response.json();
+  clearTimeout(timeoutId);
+  
+  // 🔍 PRIMEIRO: Pegar o texto RAW
+  const rawText = await response.text();
+  console.log("===== RESPOSTA RAW DO PHP =====");
+  console.log(rawText);
+  console.log("===== FIM DA RESPOSTA =====");
 
-            if (data.success) {
-              setRecipeResult({ name: data.elements_used, instructions: data.receita});
-            } else {
-              setError(data.error || "Erro ao processar solicitação.");
-            }
-          } catch (error) {
-            if (error.name === "AbortError") {
-              setError("A operação excedeu o tempo limite. Tente novamente.");
-            } else {
-              setError("Erro de conexão com o servidor. Verifique se o XAMPP e a IA estão rodando.");
-            }
-          }
+  // 🔍 TENTAR PARSEAR
+  try {
+    const data = JSON.parse(rawText);
+    console.log("✅ JSON válido:", data);
+    
+    if (data.success) {
+      setRecipeResult({ name: data.elements_used, instructions: data.receita});
+    } else {
+      setError(data.error || "Erro ao processar solicitação.");
+    }
+  } catch (parseError) {
+    console.error("❌ ERRO AO PARSEAR JSON:", parseError);
+    console.log("Texto que quebrou:", rawText.substring(0, 500)); // Primeiros 500 caracteres
+    setError("Erro de formato na resposta do servidor (SyntaxError). Veja o console.");
+  }
+
+} catch (error) {
+  if (error.name === "AbortError") {
+    setError("A operação excedeu o tempo limite. Tente novamente.");
+  } else {
+    setError("Erro de conexão com o servidor: " + error.name);
+  }
+}
 
           setIsLoading(false);
         }}

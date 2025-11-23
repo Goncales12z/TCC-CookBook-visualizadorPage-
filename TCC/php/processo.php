@@ -57,7 +57,7 @@ try {
         $ingrediente = $ingrediente['quantidade'];
     }
     $ingredientes = "";
-    for($i=0; $i < count($ingredientes_receita); $i++) {
+    for ($i = 0; $i < count($ingredientes_receita); $i++) {
         $ingredientes = $ingredientes . $ingredientes_receita[$i] . "\n";
     }
 
@@ -65,7 +65,7 @@ try {
     $stmt->execute(["%{$search}%"]);
     $passos_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $passos = "";
-    for($i=0; $i < count($passos_receita); $i++) {
+    for ($i = 0; $i < count($passos_receita); $i++) {
         $passos = $passos . $passos_receita[$i]['ordem'] . ". " . $passos_receita[$i]['descricao'] . "\n";
     }
 
@@ -73,7 +73,7 @@ try {
     $stmt1->execute([$userId]);
     $ingrediente_existente = $stmt1->fetchAll(PDO::FETCH_COLUMN);
     // Formatar ingredientes
-    
+
     if ($receita_existente) {
         // Se encontrou, retorna a receita do banco e finaliza o script
         echo json_encode([
@@ -107,7 +107,6 @@ curl_setopt($test_ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($test_ch, CURLOPT_TIMEOUT, 5);
 $test_response = curl_exec($test_ch);
 $test_error = curl_error($test_ch);
-curl_close($test_ch);
 
 if ($test_error) {
     echo json_encode([
@@ -122,8 +121,8 @@ if ($test_error) {
 $ingredientesDisponiveis = implode(', ', $ingrediente_existente);
 
 
-    // Prompt padrão aprimorado
-    $prompt = "Crie uma receita para {$search}.
+// Prompt padrão aprimorado
+$prompt = "Crie uma receita para {$search}.
 A resposta deve seguir EXATAMENTE o formato abaixo, sem adicionar explicações extras, comentários ou emojis:
 
 [DESCRIÇÃO]  
@@ -159,7 +158,7 @@ $data = [
     ]
 ];
 
-/* para falar com o modelo
+//para falar com o modelo
 $ch = curl_init($ollamaUrl);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -179,7 +178,6 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curlError = curl_error($ch);
 
 
-curl_close($ch);
 
 // Verificar erros de cURL
 if ($curlError) {
@@ -226,42 +224,42 @@ if (!isset($responseData['response']) || empty(trim($responseData['response'])))
 
 // Extrair a composição gerada
 $receita = $responseData['response'];
-*/
 
-$receita = "[DESCRIÇÃO]
-Risotto de abobora é um prato cremoso e saboroso, feito com a abobora como ingrediente principal. O risoto tem uma textura suave e leve, com sabores doce e levemente amargo da abobora. É típico de refeições à noite.
 
-[INGREDIENTES]
-- 250g de arroz
-- 1 abobora média picada
-- 2 colheres de sopa de azeite
-- 1 cebola picada
-- 3 dentes de alho picados
-- 500ml de caldo de galinha
-- Sal e pimenta a gosto
+// $receita = "[DESCRIÇÃO]
+// Risotto de abobora é um prato cremoso e saboroso, feito com a abobora como ingrediente principal. O risoto tem uma textura suave e leve, com sabores doce e levemente amargo da abobora. É típico de refeições à noite.
 
-[QUANTIDADES]
-- 250g de arroz
-- 1 abobora média
-- 2 colheres de sopa de azeite
-- 1 cebola
-- 3 dentes de alho
+// [INGREDIENTES]
+// - 250g de arroz
+// - 1 abobora média picada
+// - 2 colheres de sopa de azeite
+// - 1 cebola picada
+// - 3 dentes de alho picados
+// - 500ml de caldo de galinha
+// - Sal e pimenta a gosto
 
-[MODO DE PREPARO]
-1. Em uma panela grande, aqueça o azeite em fogo médio e adicione a cebola e o alho. Cozinhe até que a cebola esteja translúcida.
+// [QUANTIDADES]
+// - 250g de arroz
+// - 1 abobora média
+// - 2 colheres de sopa de azeite
+// - 1 cebola
+// - 3 dentes de alho
 
-2. Adicione a abobora picada à panela e cozinhe por 5 minutos, mexendo ocasionalmente.
+// [MODO DE PREPARO]
+// 1. Em uma panela grande, aqueça o azeite em fogo médio e adicione a cebola e o alho. Cozinhe até que a cebola esteja translúcida.
 
-3. Adicione o arroz à panela e cozinhe por 1-2 minutos, mexendo constantemente.
+// 2. Adicione a abobora picada à panela e cozinhe por 5 minutos, mexendo ocasionalmente.
 
-4. Adicione o caldo de galinha à panela, uma xícara de cada vez, mexendo bem após cada adição.
+// 3. Adicione o arroz à panela e cozinhe por 1-2 minutos, mexendo constantemente.
 
-5. Cozinhe o risoto por cerca de 20-25 minutos, ou até que o arroz esteja cozido e a abobora tenha se absorvido completamente.
+// 4. Adicione o caldo de galinha à panela, uma xícara de cada vez, mexendo bem após cada adição.
 
-6. Tempere com sal e pimenta a gosto.
+// 5. Cozinhe o risoto por cerca de 20-25 minutos, ou até que o arroz esteja cozido e a abobora tenha se absorvido completamente.
 
-[CATEGORIA]
-Jantar";
+// 6. Tempere com sal e pimenta a gosto.
+
+// [CATEGORIA]
+// Jantar";
 
 // --- INTEGRAÇÃO COM BANCO DE DADOS (ESCRITA) ---
 // 2. Salvar a nova receita gerada pela IA no banco de dados
@@ -271,12 +269,12 @@ try {
     // Extrai as seções da resposta da IA
     preg_match('/\[DESCRIÇÃO\](.*?)\[INGREDIENTES\]/s', $receita, $descMatches);
     $descricaoPrato = isset($descMatches[1]) ? trim($descMatches[1]) : 'Descrição não gerada.';
-    
+
     preg_match('/\[INGREDIENTES\](.*?)\[QUANTIDADES\]/s', $receita, $ingMatches);
     $ingredientesTexto = isset($ingMatches[1]) ? trim($ingMatches[1]) : '';
 
-    preg_match('/\[QUANTIDADES\](.*?)\[MODO DE PREPARO\]/s', $receita, $ingMatches);
-    $quantidadesTexto = isset($ingMatches[1]) ? trim($ingMatches[1]) : '';
+    preg_match('/\[QUANTIDADES\](.*?)\[MODO DE PREPARO\]/s', $receita, $qtdeMatches);
+    $quantidadesTexto = isset($qtdeMatches[1]) ? trim($qtdeMatches[1]) : '';
 
     preg_match('/\[MODO DE PREPARO\](.*?)\[CATEGORIA\]/s', $receita, $prepMatches);
     $preparoTexto = isset($prepMatches[1]) ? trim($prepMatches[1]) : '';
@@ -303,47 +301,67 @@ try {
     $ingredientes = null;
     $quantidades = null;
 
-    if(!empty($ingredientesTexto)){
+    if (!empty($ingredientesTexto)) {
         $ingredientes = preg_split('/^-\s*/m', $ingredientesTexto, -1, PREG_SPLIT_NO_EMPTY);
+        $ingredientes = array_map(function ($ing) {
+            $ing = trim($ing);
+
+            // 1. Remove quantidades e medidas do início
+            // Ex: "250g", "2 colheres de sopa", "1 colher de chá"
+            $ing = preg_replace('/^\d+\s*(g|kg|ml|l|mg|litros?|gramas?|quilos?|miligramas?|mililitros?|unidades?|dentes?|xícaras?|colher(es)?(\s+(de\s+)?(sopa|chá|café))?)\s*/i', '', $ing);
+
+            // 2. Remove números soltos no início (ex: "4 costelas" → "costelas")
+            $ing = preg_replace('/^\d+\s+/u', '', $ing);
+
+            // 3. Remove "de" no início que sobrou
+            $ing = preg_replace('/^de\s+/i', '', $ing);
+
+            // 4. Remove prefixos como "extrato de", "suco de", mantendo só o principal
+            //$ing = preg_replace('/^(extrato|suco|farinha|creme|polpa|molho|pasta|óleo|leite|pó|purê)\s+de\s+/i', '', $ing);
+
+            return trim($ing);
+        }, $ingredientes);
+        $ingredientes = array_map('trim', $ingredientes);
+        $ingredientes = array_filter($ingredientes); // Remove vazios
         $quantidades = preg_split('/^-\s*/m', $quantidadesTexto, -1, PREG_SPLIT_NO_EMPTY);
         $placeholders = str_repeat("?,", count($ingredientes) - 1) . "?";
-        $stmt_ingred = $pdo->prepare("SELECT i.id_ingredientes FROM ingredientes i WHERE i.nome_ingredientes IN ($placeholders)");
+        $stmt_ingred = $pdo->prepare("SELECT i.id_ingredientes, i.nome_ingredientes FROM ingredientes i WHERE i.nome_ingredientes IN ($placeholders)");
         $stmt_ingred->execute($ingredientes);
         $qtde_ingred = $stmt_ingred->fetchAll(PDO::FETCH_NUM);
-        if(count($qtde_ingred) == count($ingredientes)){
+
+        if (count($qtde_ingred) == count($ingredientes)) {
+
             $i = 0;
             $stmt_ingred = $pdo->prepare("INSERT INTO receita_ingredientes (id_receita, id_ingredientes, quantidade) VALUES (?, ?, ?)");
             foreach ($ingredientes as $ingrediente) {
-            if (!empty($ingrediente)) {
-                $stmt_passo->execute([$id_nova_receita, $qtde_ingred[$i], $quantidades]);
-                $i++;
+                if (!empty($ingrediente)) {
+                    $stmt_passo->execute([$id_nova_receita, $ingrediente, $quantidades[$i]]);
+                    $i++;
+                }
             }
-        }
-        }
-        else{
+        } else {
+
             // EXERCICIO 1 CADASTRAR TODOS OS INGREDIENTES NA TABELA, MESMO QUE HAJA REPETICAO
             // EXERCICIO 2 SEGUIR COM A DIFRENCA DE INGREDIENTES 
             // criar um vetor $diffIngredientes, contendo a diferença de registros entre $ingredientes - $ingredientesBanco
             // $ingredientes = ["batata", "cenoura"] e $ingredientesBanco = ["cenoura"]
             // $diffIngredientes = array_diff($ingredientes, $igredientesBanco);
             // $diffingredientes = ["batata"]
-            /*
-            for($i=0; $i < count($ingredientes); $i++){
+            $ingredientesBanco = [];
+            //$ingredientesBanco = array_column($qtde_ingred, 1);
 
-                $ingrediente = $ingredientes[$i];
-                // ATENÇÃO nesse vetor de quantidades 
-                $quantidade = $quantidadesTexto[$i];
+            for ($i = 0; $i < count($qtde_ingred); $i++) {
+                $ingredientesBanco[] = $qtde_ingred[$i][1];
             }
-                */
+            $diffIngredientes = array_diff($ingredientes, $ingredientesBanco);
+            $diffIngredientes = array_values($diffIngredientes); // Reindexa o array
 
-            /*
-            for($i=0; $i < count($ingredientes); $i++){
+
+            for ($i = 0; $i < count($diffIngredientes); $i++) {
                 // inserir os ingredientes no banco (tabela ingredientes)
                 $stmtR = $pdo->prepare("INSERT INTO ingredientes (nome_ingredientes) VALUES (?)");
-                $stmtR->execute([$ingredientes]);
-
+                $stmtR->execute([$diffIngredientes[$i]]);
             }
-                */
         }
     }
 
@@ -356,6 +374,8 @@ try {
     $pdo->rollBack();
     // Não vamos parar o script se falhar ao salvar (ex: receita duplicada),
     // mas podemos logar o erro para depuração.
+    echo "ERRO AO SALVAR: " . $e->getMessage() . "<br>";
+    echo "Trace: " . $e->getTraceAsString();
     error_log("Falha ao salvar receita no banco: " . $e->getMessage());
 }
 
@@ -366,7 +386,7 @@ $final_response = [
     'elements_used' => $search,
     'ingredientes' => $ingredientes,
     'quantidades' => $quantidades,
-    'ingredientesTexto' => var_dump($ingredientesTexto)
+    'ingredientesTexto' => $ingredientesTexto
 ];
 
 echo json_encode($final_response);

@@ -3,36 +3,35 @@ require_once 'conexao.php'; // Inclui o arquivo de conexão com o banco de dados
 $pdo = conectarDB();
 
 $receita = "[DESCRIÇÃO]
-Risotto de abobora é um prato cremoso e saboroso, feito com a abobora como ingrediente principal. O risoto tem uma textura suave e leve, com sabores doce e levemente amargo da abobora. É típico de refeições à noite.
+Mousse de maracujá é um prato refrescante e doce, com sabor suave e acarajado. A textura cremosa e leve é perfeita para lanches da tarde ou café da manhã.
 
 [INGREDIENTES]
-- 250g de arroz
-- 1 abobora média picada
-- 2 colheres de sopa de azeite
-- 1 cebola picada
-- 3 dentes de alho picados
-- 500ml de caldo de galinha
-- Sal e pimenta a gosto
+- 250g de leite
+- 100g de açúcar
+- 2 colheres de sopa de amido de milho
+- 2 colheres de sopa de água
+- 1 colher de sopa de extrato de maracujá
+- 30g de gelatina
+- 200g de suco de maracujá
+- Arroz
+- Batata
 
 [QUANTIDADES]
-- 250g de arroz
-- 1 abobora média
-- 2 colheres de sopa de azeite
-- 1 cebola
-- 3 dentes de alho
+- 250g de leite
+- 100g de açúcar
+- 2 colheres de sopa de amido de milho
+- 2 colheres de sopa de água
+- 1 colher de sopa de extrato de maracujá
+- 30g de gelatina
+- 200g de suco de maracujá
 
 [MODO DE PREPARO]
-1. Em uma panela grande, aqueça o azeite em fogo médio e adicione a cebola e o alho. Cozinhe até que a cebola esteja translúcida.
-
-2. Adicione a abobora picada à panela e cozinhe por 5 minutos, mexendo ocasionalmente.
-
-3. Adicione o arroz à panela e cozinhe por 1-2 minutos, mexendo constantemente.
-
-4. Adicione o caldo de galinha à panela, uma xícara de cada vez, mexendo bem após cada adição.
-
-5. Cozinhe o risoto por cerca de 20-25 minutos, ou até que o arroz esteja cozido e a abobora tenha se absorvido completamente.
-
-6. Tempere com sal e pimenta a gosto.
+1. Em uma panela, misture o leite, o açúcar, o amido de milho e a água. Cozinhe em fogo médio, mexendo constantemente, até que o açúcar dissolva e a mistura engrosse.
+2. Retire do fogo e adicione a gelatina e o extrato de maracujá. Misture bem e deixe esfriar.
+3. Adicione o suco de maracujá à mistura e mexa até que esteja bem incorporado.
+4. Despeje a mistura em uma tigela e deixe esfriar completamente.
+5. Cubra com plástico filme e refrigere por pelo menos 3 horas, ou até que estiver firme.
+6. Sirva fresca e deliciosa.
 
 [CATEGORIA]
 Jantar";
@@ -65,14 +64,14 @@ try {
 
     // Insere a receita principal e obtém o ID
     $stmt = $pdo->prepare("INSERT INTO receitas (nome_receita, descricao, categoria, id_usuario, imagem_url) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$search, $descricaoPrato, $categoriaPrato, $userId, 'https://placehold.co/500x500?text=AI+Generated+Recipe']);
+    $stmt->execute([$search, $descricaoPrato, $categoriaPrato, 1, 'https://placehold.co/500x500?text=AI+Generated+Recipe']);
     $id_nova_receita = $pdo->lastInsertId();
 
-    echo $id_nova_receita;
+    echo $id_nova_receita . "<br>";
 
     // Processa e insere os passos do modo de preparo
     if (!empty($preparoTexto)) {
-        echo "inserindo modo de preparo";
+        echo "inserindo modo de preparo<br>";
         $passos = preg_split('/^\d+\.\s*/m', $preparoTexto, -1, PREG_SPLIT_NO_EMPTY);
         $stmt_passo = $pdo->prepare("INSERT INTO receita_passos (id_receita, ordem, descricao) VALUES (?, ?, ?)");
         foreach ($passos as $ordem => $passo) {
@@ -86,20 +85,43 @@ try {
     $quantidades = null;
 
     if(!empty($ingredientesTexto)){
-        echo "SE INGREDIENTES TEXTO NAO ESTA VAZIO";
+        echo "SE INGREDIENTES TEXTO NAO ESTA VAZIO<br><br>";
         $ingredientes = preg_split('/^-\s*/m', $ingredientesTexto, -1, PREG_SPLIT_NO_EMPTY);
-        echo var_dump($ingredientes);
+        echo var_dump($ingredientes) . "ingred antes<br><br>";
+        $ingredientes = array_map(function ($ing) {
+            $ing = trim($ing);
+
+            // 1. Remove quantidades e medidas do início
+            // Ex: "250g", "2 colheres de sopa", "1 colher de chá"
+            $ing = preg_replace('/^\d+\s*(g|kg|ml|l|mg|litros?|gramas?|quilos?|miligramas?|mililitros?|unidades?|dentes?|xícaras?|colher(es)?(\s+(de\s+)?(sopa|chá|café))?)\s*/iu', '', $ing);
+
+            // 2. Remove "de" no início que sobrou
+            $ing = preg_replace('/^de\s+/iu', '', $ing);
+
+            // 3. Remove prefixos como "extrato de", "suco de", mantendo só o principal
+            //$ing = preg_replace('/^(extrato|suco|farinha|creme|polpa|molho|pasta|óleo|leite|pó|purê)\s+de\s+/iu', '', $ing);
+
+            return trim($ing);
+        }, $ingredientes);
+        $ingredientes = array_map('trim', $ingredientes);
+        $ingredientes = array_filter($ingredientes); // Remove vazios
+        echo var_dump($ingredientes) . "ingred<br><br>";
         $quantidades = preg_split('/^-\s*/m', $quantidadesTexto, -1, PREG_SPLIT_NO_EMPTY);
         $placeholders = str_repeat("?,", count($ingredientes) - 1) . "?";
-        $stmt_ingred = $pdo->prepare("SELECT i.id_ingredientes FROM ingredientes i WHERE i.nome_ingredientes IN ($placeholders)");
+        $stmt_ingred = $pdo->prepare("SELECT i.id_ingredientes, i.nome_ingredientes FROM ingredientes i WHERE i.nome_ingredientes IN ($placeholders)");
         $stmt_ingred->execute($ingredientes);
         $qtde_ingred = $stmt_ingred->fetchAll(PDO::FETCH_NUM);
+        echo var_dump($qtde_ingred) . " " . count($qtde_ingred);
+        echo " qtde <br>";
+        echo count($ingredientes);
+        echo "ingred banco <br>";
+
         
                 //if(count($qtde_ingred) == count($ingredientes))
 
         if(false)
             {
-            echo "quantidade de ingredientes é idêntica";
+            echo "quantidade de ingredientes é idêntica <br>";
 
             $i = 0;
             $stmt_ingred = $pdo->prepare("INSERT INTO receita_ingredientes (id_receita, id_ingredientes, quantidade) VALUES (?, ?, ?)");
@@ -111,7 +133,7 @@ try {
              }
         }
         else{
-                echo "inserindo novo ingrediente";
+                echo "inserindo novo ingrediente <br>";
 
             // EXERCICIO 1 CADASTRAR TODOS OS INGREDIENTES NA TABELA, MESMO QUE HAJA REPETICAO
             // EXERCICIO 2 SEGUIR COM A DIFRENCA DE INGREDIENTES 
@@ -119,32 +141,24 @@ try {
             // $ingredientes = ["batata", "cenoura"] e $ingredientesBanco = ["cenoura"]
             // $diffIngredientes = array_diff($ingredientes, $igredientesBanco);
             // $diffingredientes = ["batata"]
-            /*
-            for($i=0; $i < count($ingredientes); $i++){
-
-                $ingrediente = $ingredientes[$i];
-                // ATENÇÃO nesse vetor de quantidades 
-                $quantidade = $quantidadesTexto[$i];
+            
+            for($i=0; $i < count($qtde_ingred); $i++){
+                $ingredientesBanco[] = $qtde_ingred[$i][1];
             }
-            */
+            echo var_dump($ingredientesBanco);
+            echo "<br>";
+            $diffIngredientes = array_diff($ingredientes, $ingredientesBanco);
+            echo var_dump($diffIngredientes);
 
-            /*
-            for($i=0; $i < count($ingredientes); $i++){
+            
+            for($i=0; $i < count($diffIngredientes); $i++){
                 // inserir os ingredientes no banco (tabela ingredientes)
                 $stmtR = $pdo->prepare("INSERT INTO ingredientes (nome_ingredientes) VALUES (?)");
-                $stmtR->execute([$ingredientes]);
+                $stmtR->execute([$diffIngredientes[$i]]);
 
             }
-            */
-            echo "<br>";
-            echo var_dump($ingredientes);
-            echo "<br>";
-            for($i=0; $i < count($ingredientes); $i++){
-                // inserir os ingredientes no banco (tabela ingredientes)
-                $stmtR = $pdo->prepare("INSERT INTO ingredientes (nome_ingredientes) VALUES (?)");
-                $stmtR->execute([$ingredientes[$i]]);
-
-            }
+            
+            
 
         }
     }

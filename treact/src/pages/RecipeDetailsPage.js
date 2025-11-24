@@ -80,7 +80,6 @@ export default () => {
       <Header />
       <Container>
         <Content>
-          <Image imageSrc={recipe.imagem_url} />
           <Title>{recipe.nome_receita}</Title>
           <p tw="text-gray-600 mt-4">{recipe.descricao}</p>
 

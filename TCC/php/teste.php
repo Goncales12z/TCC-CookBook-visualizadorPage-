@@ -148,16 +148,18 @@ try {
             echo var_dump($ingredientesBanco);
             echo "<br>";
             $diffIngredientes = array_diff($ingredientes, $ingredientesBanco);
+            $diffIngredientes = array_values($diffIngredientes); // Reindexa o array
             echo var_dump($diffIngredientes);
 
-            
-            for($i=0; $i < count($diffIngredientes); $i++){
+            $ids_new_ingredientes = [];
+            for ($i = 0; $i < count($diffIngredientes); $i++) {
                 // inserir os ingredientes no banco (tabela ingredientes)
                 $stmtR = $pdo->prepare("INSERT INTO ingredientes (nome_ingredientes) VALUES (?)");
                 $stmtR->execute([$diffIngredientes[$i]]);
-
+                $ids_new_ingredientes = $pdo->lastInsertId();
             }
-            
+            var_dump($ids_new_ingredientes);
+            echo " IDS<br>";
             
 
         }

@@ -66,16 +66,6 @@ export default function Perfil() {
             <form>
               <Field>
                 <InputWrapper>
-                  <Link href="/login">login</Link>
-                </InputWrapper>
-              </Field>
-              <Field>
-                <InputWrapper>
-                  <Link href="/register">Registrar</Link>
-                </InputWrapper>
-              </Field>
-              <Field>
-                <InputWrapper>
                   <Link href="/configuracao">Meus ingredientes</Link>
                 </InputWrapper>
               </Field>

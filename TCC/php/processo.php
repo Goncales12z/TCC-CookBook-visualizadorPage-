@@ -325,7 +325,7 @@ try {
         $ingredientes = array_filter($ingredientes); // Remove vazios
         $quantidades = preg_split('/^-\s*/m', $quantidadesTexto, -1, PREG_SPLIT_NO_EMPTY);
         $placeholders = str_repeat("?,", count($ingredientes) - 1) . "?";
-        $stmt_ingred = $pdo->prepare("SELECT i.id_ingredientes, i.nome_ingredientes FROM ingredientes i WHERE i.nome_ingredientes IN ($placeholders)");
+        $stmt_ingred = $pdo->prepare("SELECT i.id_ingredientes, i.nome_ingredientes FROM ingredientes i WHERE LOWER(i.nome_ingredientes) IN ($placeholders)");
         $stmt_ingred->execute($ingredientes);
         $qtde_ingred = $stmt_ingred->fetchAll(PDO::FETCH_NUM);
 
@@ -333,13 +333,14 @@ try {
 
             $i = 0;
             $stmt_ingred = $pdo->prepare("INSERT INTO receita_ingredientes (id_receita, id_ingredientes, quantidade) VALUES (?, ?, ?)");
-            foreach ($ingredientes as $ingrediente) {
+            for($i = 0; $i < count($ingredientes); $i++) {
                 if (!empty($ingrediente)) {
-                    $stmt_passo->execute([$id_nova_receita, $ingrediente, $quantidades[$i]]);
+                    $stmt_passo->execute([$id_nova_receita, $qtde_ingred[$i][0], $quantidades[$i]]);
                     $i++;
                 }
             }
-        } else {
+        } 
+        else {
 
             // EXERCICIO 1 CADASTRAR TODOS OS INGREDIENTES NA TABELA, MESMO QUE HAJA REPETICAO
             // EXERCICIO 2 SEGUIR COM A DIFRENCA DE INGREDIENTES 
@@ -356,12 +357,25 @@ try {
             $diffIngredientes = array_diff($ingredientes, $ingredientesBanco);
             $diffIngredientes = array_values($diffIngredientes); // Reindexa o array
 
-
+            $ids_new_ingredientes = [];
             for ($i = 0; $i < count($diffIngredientes); $i++) {
                 // inserir os ingredientes no banco (tabela ingredientes)
                 $stmtR = $pdo->prepare("INSERT INTO ingredientes (nome_ingredientes) VALUES (?)");
                 $stmtR->execute([$diffIngredientes[$i]]);
+                $ids_new_ingredientes = $pdo->lastInsertId();
             }
+
+            $stmt_ids = $pdo->prepare("SELECT i.id_ingredientes FROM ingredientes i WHERE LOWER(i.nome_ingredientes) IN ($placeholders)");
+            $stmt_ids->execute($ingredientes);
+            $ids_ingredientes = $stmt_ids->fetchAll(PDO::FETCH_COLUMN);
+
+            // Agora inserir todos os ingredientes (novos e existentes) na tabela receita_ingredientes
+            $stmt_ingred = $pdo->prepare("INSERT INTO receita_ingredientes (id_receita, id_ingrediente, quantidade) VALUES (?, ?, ?)");
+            for($i=0; $i < count($diffIngredientes); $i++){
+                $stmt_ingred->execute([$id_nova_receita, $ids_ingredientes[$i], $quantidades[$i]]);
+
+            }
+            
         }
     }
 

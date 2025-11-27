@@ -13,7 +13,7 @@ require_once 'conexao.php';
 
 try {
     $pdo = conectarDB();
-    $stmt = $pdo->query("SELECT id_ingredientes, nome_ingredientes, tipo FROM ingredientes ORDER BY tipo, nome_ingredientes");
+    $stmt = $pdo->query("SELECT id_ingredientes, nome_ingredientes, tipo FROM ingredientes ORDER BY id_ingredientes LIMIT 10");
     $ingredientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Organiza os ingredientes por tipo para exibir em grupos

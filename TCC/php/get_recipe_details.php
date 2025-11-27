@@ -24,7 +24,7 @@ try {
         $stmt_ing = $pdo->prepare("SELECT i.nome_ingredientes, ri.quantidade FROM receita_ingredientes ri JOIN ingredientes i ON ri.id_ingrediente = i.id_ingredientes WHERE ri.id_receita = ?");
         $stmt_ing->execute([$recipeId]);
         $ingredientes_db = $stmt_ing->fetchAll(PDO::FETCH_ASSOC);
-        $receita['ingredients'] = array_map(fn($ing) => "{$ing['quantidade']} de {$ing['nome_ingredientes']}", $ingredientes_db);
+        $receita['ingredients'] = array_map(fn($ing) => "{$ing['quantidade']}", $ingredientes_db);
 
         $stmt_prep = $pdo->prepare("SELECT descricao FROM receita_passos WHERE id_receita = ? ORDER BY ordem ASC");
         $stmt_prep->execute([$recipeId]);

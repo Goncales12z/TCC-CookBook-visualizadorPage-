@@ -34,16 +34,15 @@ try {
     // 3. Verificar se o usuário existe e se a senha está correta
     if ($user && password_verify($senha, $user['senha_hash'])) {
         // Senha correta!
-        
+
         // Remove a senha hash da resposta por segurança
         unset($user['senha_hash']);
 
         echo json_encode([
-            'success' => true, 
+            'success' => true,
             'message' => 'Login realizado com sucesso!',
             'user' => $user // Envia os dados do usuário para o frontend
         ]);
-
     } else {
         // Usuário não encontrado ou senha incorreta
         http_response_code(401); // 401 Unauthorized
@@ -54,4 +53,3 @@ try {
     echo json_encode(['success' => false, 'error' => 'Erro no servidor: ' . $e->getMessage()]);
     exit;
 }
-?>

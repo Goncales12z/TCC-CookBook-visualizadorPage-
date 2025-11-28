@@ -17,7 +17,7 @@ try {
 
     $stmt = $pdo->prepare("SELECT id_receita, nome_receita, descricao, categoria, imagem_url FROM receitas WHERE id_receita = ?");
     $stmt->execute([$recipeId]);
-    
+
     $receita = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($receita) {
@@ -35,9 +35,7 @@ try {
         http_response_code(404);
         echo json_encode(['success' => false, 'error' => 'Receita não encontrada.']);
     }
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Erro ao buscar detalhes da receita: ' . $e->getMessage()]);
 }
-?>

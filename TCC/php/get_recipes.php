@@ -19,7 +19,6 @@ if (!$userId) {
     exit;
 }
 
-
 try {
     $pdo = conectarDB();
 
@@ -39,9 +38,6 @@ try {
             }
         }
     }
-    // $stmt = $pdo->prepare("SELECT rp.ordem, rp.descricao FROM receitas r, receita_passos rp WHERE r.id_receita = rp.id_receita AND r.nome_receita LIKE ?");
-    // $stmt->execute(["%{$search}%"]);
-    // $passos_receita = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $sql = "
         SELECT 
@@ -64,7 +60,6 @@ try {
         ORDER BY 
             ingredientes_em_comum DESC, 
             total_ingredientes ASC
-        LIMIT 4
     ";
 
     $stmt4 = $pdo->prepare($sql);
@@ -72,7 +67,7 @@ try {
 
     $recomendacoes = $stmt4->fetchAll(PDO::FETCH_ASSOC);
 
-    if(!empty($recomendacoes)){
+    if (!empty($recomendacoes)) {
         // Adiciona os ingredientes às receitas recomendadas
         foreach ($recomendacoes as &$receita) {
             $receita['ingredients'] = [];
@@ -86,7 +81,6 @@ try {
 
     $receitasPorCategoria = [];
 
-
     // Adiciona uma categoria "Recomendações" que conterá as receitas recomendadas
     $receitasPorCategoria['Recomendações'] = [];
 
@@ -97,14 +91,14 @@ try {
             'title' => $receita['nome_receita'],
             'content' => $receita['descricao'],
             'imageSrc' => $receita['imagem_url'] ?: 'https://placehold.co/500x500?text=Recipe',
-            'ingredients' => $receita['ingredients'],  
+            'ingredients' => $receita['ingredients'],
             'preparation' => []
-        ];  
+        ];
     }
 
     // Adiciona uma categoria "Todos" que conterá todas as receitas
     $receitasPorCategoria['Todos'] = [];
-    
+
     foreach ($receitas as $receita) {
         // Adiciona a receita à categoria "Todos"
         $receitasPorCategoria['Todos'][] = [
@@ -112,7 +106,7 @@ try {
             'title' => $receita['nome_receita'],
             'content' => $receita['descricao'],
             'imageSrc' => $receita['imagem_url'] ?: 'https://placehold.co/500x500?text=Recipe',
-            'ingredients' => $receita['ingredients'],  
+            'ingredients' => $receita['ingredients'],
             'preparation' => []
         ];
 
@@ -124,7 +118,7 @@ try {
         if (!isset($receitasPorCategoria[$categoria])) {
             $receitasPorCategoria[$categoria] = [];
         }
-        
+
         $receitasPorCategoria[$categoria][] = [
             'id' => $receita['id_receita'],
             'title' => $receita['nome_receita'],
@@ -137,10 +131,7 @@ try {
         'success' => true,
         'data' => $receitasPorCategoria
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Erro ao buscar receitas: ' . $e->getMessage()]);
 }
-
-?>

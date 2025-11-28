@@ -25,31 +25,31 @@ const InputWrapper = tw.div`relative`;
 //const Link = tw.a`block text-center text-blue-500 hover:underline`;
 
 export default function RegisterPage() {
-  return (
-    <AnimationRevealPage>
-      <Header />
-      <Container>
-        <Content>
-          <FormContainer>
-            <Title>Um pouco sobre quem nós somos.</Title>
-            <form>
-              <Field>
-                <InputWrapper>
-                  <p>
-                    Somos um grupo de estudandes apaixonados por tecnologia e culinária,
-                    dedicados a criar uma plataforma que conecta pessoas a experiências
-                    gastronômicas únicas. Nossa missão é facilitar o acesso a pratos
-                    deliciosos e promover a facilidade na decisão da sua refeição. Acreditamos que a
-                    comida é uma forma de arte e queremos compartilhar essa paixão com o
-                    mundo.
-                  </p>
-                </InputWrapper>
-              </Field>
-            </form>
-          </FormContainer>
-        </Content>
-      </Container>
-    </AnimationRevealPage>
-  );
+	return (
+		<AnimationRevealPage>
+			<Header />
+			<Container>
+				<Content>
+					<FormContainer>
+						<Title>Um pouco sobre quem nós somos.</Title>
+						<form>
+							<Field>
+								<InputWrapper>
+									<p>
+										Somos um grupo de estudandes apaixonados por tecnologia e
+										culinária, dedicados a criar uma plataforma que conecta
+										pessoas a experiências gastronômicas únicas. Nossa missão é
+										facilitar o acesso a pratos deliciosos e promover a
+										facilidade na decisão da sua refeição. Acreditamos que a
+										comida é uma forma de arte e queremos compartilhar essa
+										paixão com o mundo.
+									</p>
+								</InputWrapper>
+							</Field>
+						</form>
+					</FormContainer>
+				</Content>
+			</Container>
+		</AnimationRevealPage>
+	);
 }
-

@@ -50,19 +50,17 @@ try {
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['userId' => $userId]);
-    
+
     $recomendacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'success' => true,
         'data' => $recomendacoes
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'error' => 'Erro ao buscar recomendações: ' . $e->getMessage()
     ]);
 }
-?>

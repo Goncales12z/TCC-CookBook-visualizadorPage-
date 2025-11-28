@@ -129,15 +129,9 @@ A resposta deve seguir EXATAMENTE o formato abaixo, sem adicionar explicações 
 Uma breve descrição do prato, explicando seu sabor, textura e quando costuma ser servido.
 
 [INGREDIENTES]  
-- Ingrediente 1  
-- Ingrediente 2  
-- Ingrediente 3  
-(adicione quantos ingredientes forem necessários)
-
-[QUANTIDADES]  
-- Quantidade do Ingrediente 1  
-- Quantidade do Ingrediente 2  
-- Quantidade do Ingrediente 3  
+- Quantidade e medida ; Nome do Ingrediente 1 
+- Quantidade e medida ; Nome do Ingrediente 2   
+- Quantidade e medida ; Nome do Ingrediente 3   
 (adicione quantos ingredientes forem necessários)
 
 [MODO DE PREPARO]  
@@ -153,7 +147,7 @@ $data = [
     'prompt' => $prompt,
     'stream' => false,
     'options' => [
-        'temperature' => 0.6,
+        'temperature' => 0.1,
         'max_tokens' => 500
     ]
 ];
@@ -166,8 +160,8 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
 ]);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 300);        // Timeout total de 5 minutos.
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);  // 30s para conectar.
+curl_setopt($ch, CURLOPT_TIMEOUT, 600);        // Timeout total.
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);  // tempo para conectar.
 // As linhas abaixo foram removidas para evitar o erro de "operação muito lenta".
 // A configuração de limite de velocidade foi removida para permitir que a IA processe sem interrupção.
 
@@ -225,42 +219,6 @@ if (!isset($responseData['response']) || empty(trim($responseData['response'])))
 // Extrair a composição gerada
 $receita = $responseData['response'];
 
-
-// $receita = "[DESCRIÇÃO]
-// Risotto de abobora é um prato cremoso e saboroso, feito com a abobora como ingrediente principal. O risoto tem uma textura suave e leve, com sabores doce e levemente amargo da abobora. É típico de refeições à noite.
-
-// [INGREDIENTES]
-// - 250g de arroz
-// - 1 abobora média picada
-// - 2 colheres de sopa de azeite
-// - 1 cebola picada
-// - 3 dentes de alho picados
-// - 500ml de caldo de galinha
-// - Sal e pimenta a gosto
-
-// [QUANTIDADES]
-// - 250g de arroz
-// - 1 abobora média
-// - 2 colheres de sopa de azeite
-// - 1 cebola
-// - 3 dentes de alho
-
-// [MODO DE PREPARO]
-// 1. Em uma panela grande, aqueça o azeite em fogo médio e adicione a cebola e o alho. Cozinhe até que a cebola esteja translúcida.
-
-// 2. Adicione a abobora picada à panela e cozinhe por 5 minutos, mexendo ocasionalmente.
-
-// 3. Adicione o arroz à panela e cozinhe por 1-2 minutos, mexendo constantemente.
-
-// 4. Adicione o caldo de galinha à panela, uma xícara de cada vez, mexendo bem após cada adição.
-
-// 5. Cozinhe o risoto por cerca de 20-25 minutos, ou até que o arroz esteja cozido e a abobora tenha se absorvido completamente.
-
-// 6. Tempere com sal e pimenta a gosto.
-
-// [CATEGORIA]
-// Jantar";
-
 // --- INTEGRAÇÃO COM BANCO DE DADOS (ESCRITA) ---
 // 2. Salvar a nova receita gerada pela IA no banco de dados
 try {
@@ -270,11 +228,8 @@ try {
     preg_match('/\[DESCRIÇÃO\](.*?)\[INGREDIENTES\]/s', $receita, $descMatches);
     $descricaoPrato = isset($descMatches[1]) ? trim($descMatches[1]) : 'Descrição não gerada.';
 
-    preg_match('/\[INGREDIENTES\](.*?)\[QUANTIDADES\]/s', $receita, $ingMatches);
+    preg_match('/\[INGREDIENTES\](.*?)\[MODO DE PREPARO\]/s', $receita, $ingMatches);
     $ingredientesTexto = isset($ingMatches[1]) ? trim($ingMatches[1]) : '';
-
-    preg_match('/\[QUANTIDADES\](.*?)\[MODO DE PREPARO\]/s', $receita, $qtdeMatches);
-    $quantidadesTexto = isset($qtdeMatches[1]) ? trim($qtdeMatches[1]) : '';
 
     preg_match('/\[MODO DE PREPARO\](.*?)\[CATEGORIA\]/s', $receita, $prepMatches);
     $preparoTexto = isset($prepMatches[1]) ? trim($prepMatches[1]) : '';
@@ -299,16 +254,18 @@ try {
     }
 
     $ingredientes = null;
-    $quantidades = null;
 
     if (!empty($ingredientesTexto)) {
         $ingredientes = preg_split('/^-\s*/m', $ingredientesTexto, -1, PREG_SPLIT_NO_EMPTY);
+        $quantidades = $ingredientes;
+        $quantidades = array_map('trim', $quantidades);
+        $quantidades = array_filter($quantidades); // Remove vazios
         $ingredientes = array_map(function ($ing) {
             $ing = trim($ing);
 
             // 1. Remove quantidades e medidas do início
             // Ex: "250g", "2 colheres de sopa", "1 colher de chá"
-            $ing = preg_replace('/^\d+\s*(g|kg|ml|l|mg|litros?|gramas?|quilos?|miligramas?|mililitros?|unidades?|dentes?|xícaras?|colher(es)?(\s+(de\s+)?(sopa|chá|café))?)\s*/i', '', $ing);
+            $ing = preg_replace('/^\d+\s*(g|kg|ml|l|mg|litros?|gramas?|quilos?|miligramas?|mililitros?|unidades?|dentes?|xícaras?|colher(es)?|latas?(\s+(de\s+)?(sopa|chá|café))?)\s*/i', '', $ing);
 
             // 2. Remove números soltos no início (ex: "4 costelas" → "costelas")
             $ing = preg_replace('/^\d+\s+/u', '', $ing);
@@ -316,45 +273,32 @@ try {
             // 3. Remove "de" no início que sobrou
             $ing = preg_replace('/^de\s+/i', '', $ing);
 
-            // 4. Remove prefixos como "extrato de", "suco de", mantendo só o principal
-            //$ing = preg_replace('/^(extrato|suco|farinha|creme|polpa|molho|pasta|óleo|leite|pó|purê)\s+de\s+/i', '', $ing);
-
             return trim($ing);
         }, $ingredientes);
         $ingredientes = array_map('trim', $ingredientes);
-        $ingredientes = array_filter($ingredientes); // Remove vazios
-        $quantidades = preg_split('/^-\s*/m', $quantidadesTexto, -1, PREG_SPLIT_NO_EMPTY);
+        $ingredientes = array_filter($ingredientes);
         $placeholders = str_repeat("?,", count($ingredientes) - 1) . "?";
         $stmt_ingred = $pdo->prepare("SELECT i.id_ingredientes, i.nome_ingredientes FROM ingredientes i WHERE LOWER(i.nome_ingredientes) IN ($placeholders)");
-        $stmt_ingred->execute($ingredientes);
+        $stmt_ingred->execute(array_map('mb_strtolower', $ingredientes));
         $qtde_ingred = $stmt_ingred->fetchAll(PDO::FETCH_NUM);
 
         if (count($qtde_ingred) == count($ingredientes)) {
 
             $i = 0;
             $stmt_ingred = $pdo->prepare("INSERT INTO receita_ingredientes (id_receita, id_ingredientes, quantidade) VALUES (?, ?, ?)");
-            for($i = 0; $i < count($ingredientes); $i++) {
+            for ($i = 0; $i < count($ingredientes); $i++) {
                 if (!empty($ingrediente)) {
                     $stmt_passo->execute([$id_nova_receita, $qtde_ingred[$i][0], $quantidades[$i]]);
                     $i++;
                 }
             }
-        } 
-        else {
-
-            // EXERCICIO 1 CADASTRAR TODOS OS INGREDIENTES NA TABELA, MESMO QUE HAJA REPETICAO
-            // EXERCICIO 2 SEGUIR COM A DIFRENCA DE INGREDIENTES 
-            // criar um vetor $diffIngredientes, contendo a diferença de registros entre $ingredientes - $ingredientesBanco
-            // $ingredientes = ["batata", "cenoura"] e $ingredientesBanco = ["cenoura"]
-            // $diffIngredientes = array_diff($ingredientes, $igredientesBanco);
-            // $diffingredientes = ["batata"]
+        } else {
             $ingredientesBanco = [];
-            //$ingredientesBanco = array_column($qtde_ingred, 1);
-
-            for ($i = 0; $i < count($qtde_ingred); $i++) {
+            $ingredientesBanco = array_column($qtde_ingred, 1); // Faz a mesma coisa que o for comentado abaixo
+            /*for ($i = 0; $i < count($qtde_ingred); $i++) {
                 $ingredientesBanco[] = $qtde_ingred[$i][1];
-            }
-            $diffIngredientes = array_diff($ingredientes, $ingredientesBanco);
+            }*/
+            $diffIngredientes = array_diff(array_map('mb_strtolower', $ingredientes), array_map('mb_strtolower', $ingredientesBanco));
             $diffIngredientes = array_values($diffIngredientes); // Reindexa o array
 
             $ids_new_ingredientes = [];
@@ -365,29 +309,25 @@ try {
                 $ids_new_ingredientes = $pdo->lastInsertId();
             }
 
-            $stmt_ids = $pdo->prepare("SELECT i.id_ingredientes FROM ingredientes i WHERE LOWER(i.nome_ingredientes) IN ($placeholders)");
-            $stmt_ids->execute($ingredientes);
-            $ids_ingredientes = $stmt_ids->fetchAll(PDO::FETCH_COLUMN);
+            $stmt_ids = $pdo->prepare("SELECT i.id_ingredientes, i.nome_ingredientes FROM ingredientes i WHERE LOWER(i.nome_ingredientes) IN ($placeholders)");
+            $stmt_ids->execute(array_map('mb_strtolower', $ingredientes));
+            $ids_ingredientes = $stmt_ids->fetchAll(PDO::FETCH_NUM);
 
             // Agora inserir todos os ingredientes (novos e existentes) na tabela receita_ingredientes
-            $stmt_ingred = $pdo->prepare("INSERT INTO receita_ingredientes (id_receita, id_ingrediente, quantidade) VALUES (?, ?, ?)");
-            for($i=0; $i < count($diffIngredientes); $i++){
-                $stmt_ingred->execute([$id_nova_receita, $ids_ingredientes[$i], $quantidades[$i]]);
-
+            for ($i = 0; $i < count($quantidades); $i++) {
+                for ($j = 0; $j < count($ids_ingredientes); $j++) {
+                    if (strchr($quantidades[$i], $ids_ingredientes[$j][1])) {
+                        $stmt_ingred = $pdo->prepare("INSERT INTO receita_ingredientes (id_receita, id_ingrediente, quantidade) VALUES (?, ?, ?)");
+                        $stmt_ingred->execute([$id_nova_receita, $ids_ingredientes[$j][0], $quantidades[$i]]);
+                    }
+                }
             }
-            
         }
     }
-
-    // A lógica para salvar os ingredientes da IA seria mais complexa,
-    // pois exigiria encontrar os IDs de cada ingrediente no banco.
-    // Por enquanto, salvamos a descrição e os passos.
 
     $pdo->commit();
 } catch (PDOException $e) {
     $pdo->rollBack();
-    // Não vamos parar o script se falhar ao salvar (ex: receita duplicada),
-    // mas podemos logar o erro para depuração.
     echo "ERRO AO SALVAR: " . $e->getMessage() . "<br>";
     echo "Trace: " . $e->getTraceAsString();
     error_log("Falha ao salvar receita no banco: " . $e->getMessage());
@@ -399,7 +339,6 @@ $final_response = [
     'receita' => trim($receita),
     'elements_used' => $search,
     'ingredientes' => $ingredientes,
-    'quantidades' => $quantidades,
     'ingredientesTexto' => $ingredientesTexto
 ];
 

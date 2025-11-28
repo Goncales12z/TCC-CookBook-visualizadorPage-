@@ -1,6 +1,7 @@
 <?php
 
-function conectarDB() {
+function conectarDB()
+{
     $host = 'localhost';    // Servidor do banco de dados
     $dbname = 'cookbook';   // Nome do banco de dados que você criou
     $user = 'root';         // Usuário padrão do XAMPP
@@ -22,5 +23,3 @@ function conectarDB() {
         exit;
     }
 }
-
-?>

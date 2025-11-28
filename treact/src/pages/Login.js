@@ -25,95 +25,97 @@ const Message = tw.p`text-center mt-4`;
 const ErrorMessage = tw(Message)`text-red-500`;
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [error, setError] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setIsLoading(true);
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setError(null);
+		setIsLoading(true);
 
-    try {
-      const response = await fetch("http://localhost/TCC/php/login.php", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password })
-      });
+		try {
+			const response = await fetch("http://localhost/TCC/php/login.php", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ email, password }),
+			});
 
-      const data = await response.json();
+			const data = await response.json();
 
-      if (response.ok && data.success) {
-        // Login bem-sucedido!
-        // Salva os dados do usuário no localStorage para mantê-lo logado
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Redireciona para a página de perfil
-        window.location.href = "/perfil";
-      } else {
-        // Erro de login (e-mail/senha errados, etc.)
-        setError(data.error || 'Ocorreu um erro ao fazer login.');
-      }
-    } catch (err) {
-      setError('Não foi possível conectar ao servidor. Tente novamente mais tarde.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+			if (response.ok && data.success) {
+				// Login bem-sucedido!
+				// Salva os dados do usuário no localStorage para mantê-lo logado
+				localStorage.setItem("user", JSON.stringify(data.user));
 
-  return (
-    <AnimationRevealPage>
-      <Header />
-      <Container>
-        <Content>
-          <FormContainer>
-            <Title>Entrar</Title>
-            <Subtitle>Acesse sua conta para ver suas receitas</Subtitle>
-            <form onSubmit={handleSubmit}>
-              <Field>
-                <Label htmlFor="email">E-mail</Label>
-                <InputWrapper>
-                  <Icon>
-                    <Mail size={20} />
-                  </Icon>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Seu e-mail"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </InputWrapper>
-              </Field>
-              <Field>
-                <Label htmlFor="password">Senha</Label>
-                <InputWrapper>
-                  <Icon>
-                    <Lock size={20} />
-                  </Icon>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Sua senha"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </InputWrapper>
-              </Field>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Entrando..." : "Entrar"}
-              </Button>
-            </form>
-            {error && <ErrorMessage>{error}</ErrorMessage>}
-            <LinkText href="/register">Não tem uma conta? Cadastre-se</LinkText>
-          </FormContainer>
-        </Content>
-      </Container>
-    </AnimationRevealPage>
-  );
+				// Redireciona para a página de perfil
+				window.location.href = "/perfil";
+			} else {
+				// Erro de login (e-mail/senha errados, etc.)
+				setError(data.error || "Ocorreu um erro ao fazer login.");
+			}
+		} catch (err) {
+			setError(
+				"Não foi possível conectar ao servidor. Tente novamente mais tarde."
+			);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	return (
+		<AnimationRevealPage>
+			<Header />
+			<Container>
+				<Content>
+					<FormContainer>
+						<Title>Entrar</Title>
+						<Subtitle>Acesse sua conta para ver suas receitas</Subtitle>
+						<form onSubmit={handleSubmit}>
+							<Field>
+								<Label htmlFor="email">E-mail</Label>
+								<InputWrapper>
+									<Icon>
+										<Mail size={20} />
+									</Icon>
+									<Input
+										id="email"
+										type="email"
+										placeholder="Seu e-mail"
+										required
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+									/>
+								</InputWrapper>
+							</Field>
+							<Field>
+								<Label htmlFor="password">Senha</Label>
+								<InputWrapper>
+									<Icon>
+										<Lock size={20} />
+									</Icon>
+									<Input
+										id="password"
+										type="password"
+										placeholder="Sua senha"
+										required
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+									/>
+								</InputWrapper>
+							</Field>
+							<Button type="submit" disabled={isLoading}>
+								{isLoading ? "Entrando..." : "Entrar"}
+							</Button>
+						</form>
+						{error && <ErrorMessage>{error}</ErrorMessage>}
+						<LinkText href="/register">Não tem uma conta? Cadastre-se</LinkText>
+					</FormContainer>
+				</Content>
+			</Container>
+		</AnimationRevealPage>
+	);
 }

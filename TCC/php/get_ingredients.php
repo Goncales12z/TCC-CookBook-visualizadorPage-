@@ -13,7 +13,7 @@ require_once 'conexao.php';
 
 try {
     $pdo = conectarDB();
-    $stmt = $pdo->query("SELECT id_ingredientes, nome_ingredientes, tipo FROM ingredientes ORDER BY id_ingredientes LIMIT 10");
+    $stmt = $pdo->query("SELECT id_ingredientes, nome_ingredientes, tipo FROM ingredientes ORDER BY id_ingredientes");
     $ingredientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Organiza os ingredientes por tipo para exibir em grupos
@@ -27,9 +27,7 @@ try {
     }
 
     echo json_encode(['success' => true, 'data' => $groupedIngredients]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Erro ao buscar ingredientes: ' . $e->getMessage()]);
 }
-?>

@@ -46,4 +46,3 @@ try {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Erro ao salvar ingredientes: ' . $e->getMessage()]);
 }
-?>

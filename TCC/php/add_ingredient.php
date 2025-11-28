@@ -22,9 +22,9 @@ $pdo = conectarDB();
 try {
     $pdo->beginTransaction();
     if (!$nome || !$tipo) {
-    echo json_encode(["success" => false, "error" => "Dados incompletos"]);
-    exit;
-}
+        echo json_encode(["success" => false, "error" => "Dados incompletos"]);
+        exit;
+    }
 
     $stmt = $pdo->prepare("INSERT INTO ingredientes (nome_ingredientes, tipo) VALUES (?, ?)");
     $stmt->execute([$nome, $tipo]);
@@ -36,4 +36,3 @@ try {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Erro add ingredientes: ' . $e->getMessage()]);
 }
-?>

@@ -48,14 +48,25 @@ export default () => {
         const response = await fetch("http://localhost/TCC/php/get_ingredients.php");
         const data = await response.json();
         if (data.success) {
-          setIngredients(data.data);
+          // Normaliza os ingredientes para garantir que todos têm 'id'
+          const normalizedIngredients = {};
+          Object.entries(data.data).forEach(([group, items]) => {
+            normalizedIngredients[group] = items.map(item => ({
+              ...item,
+              id: parseInt(item.id_ingrediente || item.id)
+            }));
+          });
+          setIngredients(normalizedIngredients);
 
           // Agora, busca os ingredientes já salvos pelo usuário
           const userIngredientsResponse = await fetch(`http://localhost/TCC/php/get_user_ingredients.php?userId=${currentUser.id_usuario}`);
           const userIngredientsData = await userIngredientsResponse.json();
           if (userIngredientsData.success) {
             // Pré-seleciona os checkboxes com os ingredientes salvos
-            setSelectedIngredients(new Set(userIngredientsData.data.map(id => parseInt(id))));
+            const userIngredientIds = userIngredientsData.data.map(item => 
+              parseInt(typeof item === 'object' ? item.id_ingrediente : item)
+            );
+            setSelectedIngredients(new Set(userIngredientIds));
           }
         } else {
           setError(data.error || "Não foi possível carregar os ingredientes.");

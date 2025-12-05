@@ -38,6 +38,7 @@ try {
             }
         }
     }
+    unset($receita); // <--- libera referência para evitar efeitos colaterais
 
     $sql = "
         SELECT 
@@ -67,16 +68,26 @@ try {
 
     $recomendacoes = $stmt4->fetchAll(PDO::FETCH_ASSOC);
 
+    // Remover possíveis duplicatas por id_receita (garante que cada receita apareça somente uma vez)
+    if (!empty($recomendacoes)) {
+        $unique = [];
+        foreach ($recomendacoes as $rec) {
+            $unique[(int)$rec['id_receita']] = $rec;
+        }
+        $recomendacoes = array_values($unique);
+    }
+
     if (!empty($recomendacoes)) {
         // Adiciona os ingredientes às receitas recomendadas
         foreach ($recomendacoes as &$receita) {
             $receita['ingredients'] = [];
             foreach ($ingredientes_receita as $ingrediente) {
-                if ($ingrediente['id_receita'] === $receita['id_receita']) {
+                if ((int)$ingrediente['id_receita'] === (int)$receita['id_receita']) {
                     $receita['ingredients'][] = $ingrediente['quantidade'];
                 }
             }
         }
+        unset($receita); // <--- libera referência
     }
 
     $receitasPorCategoria = [];

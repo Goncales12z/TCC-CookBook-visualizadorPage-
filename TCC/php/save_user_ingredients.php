@@ -1,7 +1,7 @@
 <?php
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -11,38 +11,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once 'conexao.php';
 
-$input = json_decode(file_get_contents('php://input'), true);
+$raw_input = file_get_contents('php://input');
+$input = json_decode($raw_input, true);
 
 $userId = $input['userId'] ?? null;
 $ingredientIds = $input['ingredientIds'] ?? [];
 
 if (!$userId) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'ID do usuário é obrigatório.']);
+    echo json_encode([
+        'success' => false,
+        'error' => 'ID do usuário não fornecido'
+    ]);
     exit;
 }
 
-$pdo = conectarDB();
-
 try {
+    $pdo = conectarDB();
     $pdo->beginTransaction();
 
-    // 1. Limpa os ingredientes antigos do usuário para evitar duplicatas
+    // 1. Remove todos os ingredientes anteriores do usuário
     $stmt = $pdo->prepare("DELETE FROM usuario_ingredientes WHERE id_usuario = ?");
     $stmt->execute([$userId]);
 
-    // 2. Insere os novos ingredientes selecionados
+    // 2. Insere os novos ingredientes
     if (!empty($ingredientIds)) {
         $stmt = $pdo->prepare("INSERT INTO usuario_ingredientes (id_usuario, id_ingrediente) VALUES (?, ?)");
+
         foreach ($ingredientIds as $ingredientId) {
-            $stmt->execute([$userId, $ingredientId]);
+            $stmt->execute([$userId, intval($ingredientId)]);
         }
     }
 
     $pdo->commit();
-    echo json_encode(['success' => true, 'message' => 'Ingredientes salvos com sucesso!']);
+
+    echo json_encode([
+        'success' => true,
+        'message' => 'Ingredientes salvos com sucesso!',
+        'saved_count' => count($ingredientIds),
+        'ingredient_ids' => $ingredientIds
+    ]);
 } catch (PDOException $e) {
     $pdo->rollBack();
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Erro ao salvar ingredientes: ' . $e->getMessage()]);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Erro ao salvar ingredientes: ' . $e->getMessage()
+    ]);
 }
